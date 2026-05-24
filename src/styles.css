@@ -1,0 +1,217 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Kenzo Buddy design system — cozy by day, warm by night */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-cream: var(--cream);
+  --color-sky: var(--sky);
+  --color-butter: var(--butter);
+  --color-mint: var(--mint);
+  --color-blush: var(--blush);
+  --color-lilac: var(--lilac);
+  --color-user-bubble: var(--user-bubble);
+  --color-user-bubble-foreground: var(--user-bubble-foreground);
+  --color-assistant-bubble: var(--assistant-bubble);
+  --color-assistant-bubble-foreground: var(--assistant-bubble-foreground);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --shadow-cozy: 0 8px 24px -12px var(--shadow-color), 0 2px 6px -2px var(--shadow-color);
+  --shadow-float: 0 20px 40px -20px var(--shadow-color-strong);
+}
+
+:root {
+  --radius: 1.25rem;
+
+  /* Cozy off-white background, warm ink text */
+  --background: oklch(0.985 0.012 90);
+  --foreground: oklch(0.28 0.04 50);
+
+  --card: oklch(0.995 0.006 90);
+  --card-foreground: oklch(0.28 0.04 50);
+  --popover: oklch(0.995 0.006 90);
+  --popover-foreground: oklch(0.28 0.04 50);
+
+  --primary: oklch(0.86 0.13 90);
+  --primary-foreground: oklch(0.3 0.06 60);
+
+  --secondary: oklch(0.93 0.04 230);
+  --secondary-foreground: oklch(0.3 0.05 240);
+
+  --muted: oklch(0.955 0.012 85);
+  --muted-foreground: oklch(0.5 0.03 60);
+
+  --accent: oklch(0.9 0.06 155);
+  --accent-foreground: oklch(0.3 0.06 155);
+
+  --destructive: oklch(0.7 0.13 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.92 0.015 80);
+  --input: oklch(0.94 0.015 80);
+  --ring: oklch(0.82 0.1 90);
+
+  --cream: oklch(0.97 0.018 85);
+  --sky: oklch(0.92 0.045 230);
+  --butter: oklch(0.92 0.1 95);
+  --mint: oklch(0.92 0.06 155);
+  --blush: oklch(0.92 0.04 20);
+  --lilac: oklch(0.9 0.05 300);
+
+  /* Chat bubble + code tokens */
+  --user-bubble: oklch(0.93 0.04 230);
+  --user-bubble-foreground: oklch(0.3 0.05 240);
+  --assistant-bubble: oklch(0.92 0.08 90);
+  --assistant-bubble-foreground: oklch(0.3 0.06 60);
+  --code-bg: oklch(0.28 0.03 60);
+  --code-fg: oklch(0.97 0.018 85);
+
+  --shadow-color: oklch(0.7 0.05 80 / 0.22);
+  --shadow-color-strong: oklch(0.6 0.08 70 / 0.3);
+}
+
+.dark {
+  /* Warm charcoal / espresso — Kenzo Buddy at night */
+  --background: oklch(0.21 0.012 50);          /* ~#1E1A17 */
+  --foreground: oklch(0.96 0.018 85);          /* ~#FFF7EA */
+
+  --card: oklch(0.27 0.014 55);                /* ~#302923 */
+  --card-foreground: oklch(0.96 0.018 85);
+  --popover: oklch(0.27 0.014 55);
+  --popover-foreground: oklch(0.96 0.018 85);
+
+  --primary: oklch(0.82 0.14 88);              /* warm yellow ~#F5C84C */
+  --primary-foreground: oklch(0.22 0.03 55);
+
+  --secondary: oklch(0.31 0.018 55);           /* elevated panel ~#372F28 */
+  --secondary-foreground: oklch(0.96 0.018 85);
+
+  --muted: oklch(0.27 0.014 55);
+  --muted-foreground: oklch(0.66 0.02 60);     /* ~#9E8E7E */
+
+  --accent: oklch(0.78 0.07 200);              /* soft blue */
+  --accent-foreground: oklch(0.22 0.03 55);
+
+  --destructive: oklch(0.7 0.13 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.36 0.018 55);              /* warm border ~#4A4037 */
+  --input: oklch(0.29 0.014 55);
+  --ring: oklch(0.82 0.14 88);
+
+  --cream: oklch(0.31 0.018 55);
+  --sky: oklch(0.45 0.06 235);
+  --butter: oklch(0.42 0.08 80);
+  --mint: oklch(0.45 0.06 155);
+  --blush: oklch(0.45 0.05 15);
+  --lilac: oklch(0.45 0.06 320);
+
+  /* Chat bubbles — warm contrast */
+  --user-bubble: oklch(0.46 0.06 235);         /* ~#315B73 soft midnight blue */
+  --user-bubble-foreground: oklch(0.97 0.012 85);
+  --assistant-bubble: oklch(0.36 0.05 65);     /* ~#4A3826 warm brown */
+  --assistant-bubble-foreground: oklch(0.96 0.018 85);
+  --code-bg: oklch(0.17 0.012 50);             /* ~#171412 */
+  --code-fg: oklch(0.94 0.02 85);
+
+  --shadow-color: oklch(0.12 0.01 50 / 0.5);
+  --shadow-color-strong: oklch(0.08 0.01 50 / 0.6);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html {
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Animations */
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.85) translateY(6px); }
+  60% { transform: scale(1.04) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes typing-dot {
+  0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -8px); }
+}
+@keyframes buddy-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-pop-in { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
+.animate-fade-up { animation: fade-up 0.4s ease-out both; }
+.animate-drift { animation: drift 6s ease-in-out infinite; }
+.animate-buddy-glow { animation: buddy-glow 5s ease-in-out infinite; }
+
+.typing-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 9999px;
+  background: var(--muted-foreground);
+  margin: 0 2px;
+  animation: typing-dot 1.4s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0.32s; }
