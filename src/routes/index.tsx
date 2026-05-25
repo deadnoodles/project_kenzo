@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AnimatedBackground } from "@/components/landing/AnimatedBackground";
 import { AppNav } from "@/components/AppNav";
 import { TypewriterHeading } from "@/components/landing/TypewriterHeading";
 import { ModeToggle, type HeroMode } from "@/components/landing/ModeToggle";
 import { HeroPreview } from "@/components/landing/HeroPreview";
 import { LandingBackground } from "@/components/LandingBackground";
-
 
 import {
   ScanSearch,
@@ -26,7 +24,10 @@ export const Route = createFileRoute("/")({
         content:
           "Paste code, inspect highlights, or chat through your next fix with Kenzo Buddy.",
       },
-      { property: "og:title", content: "Kenzo Buddy — Review code with your duck reviewer" },
+      {
+        property: "og:title",
+        content: "Kenzo Buddy — Review code with your duck reviewer",
+      },
       {
         property: "og:description",
         content:
@@ -67,7 +68,11 @@ const features = [
 
 const heroCopy: Record<
   HeroMode,
-  { subtitle: string; primary: { to: string; label: string }; secondary: { to: string; label: string } }
+  {
+    subtitle: string;
+    primary: { to: string; label: string };
+    secondary: { to: string; label: string };
+  }
 > = {
   review: {
     subtitle:
@@ -88,13 +93,13 @@ function LandingPage() {
   const copy = heroCopy[mode];
 
   return (
-<div className="relative min-h-screen overflow-hidden bg-background">
-  <LandingBackground />
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <LandingBackground />
 
-  <div className="relative z-10">
+      <div className="relative z-10">
         <AppNav showAuth />
 
-        <section className="relative pt-16 pb-40 md:pt-20 md:pb-48">
+        <section className="relative pb-40 pt-16 md:pb-48 md:pt-20">
           <div className="mx-auto max-w-7xl px-6 md:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
               <div className="animate-fade-up max-w-2xl">
@@ -113,6 +118,7 @@ function LandingPage() {
                     {copy.primary.label}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
+
                   <Link to={copy.secondary.to} className="btn-secondary">
                     {copy.secondary.label}
                   </Link>
@@ -130,14 +136,17 @@ function LandingPage() {
           </div>
         </section>
 
-        <section id="features" className="relative pt-12 pb-44">
+        <section id="features" className="relative pb-44 pt-12">
           <div className="mx-auto max-w-7xl px-6 md:px-8">
             <div className="mb-20">
-              <h2 className="font-display text-3xl md:text-4xl">What Kenzo does</h2>
+              <h2 className="font-display text-3xl md:text-4xl">
+                What Kenzo does
+              </h2>
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
                 Minimal cards, maximum clarity.
               </p>
             </div>
+
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
               {features.map(({ icon: Icon, title, body }) => (
                 <div
@@ -147,7 +156,9 @@ function LandingPage() {
                   <div className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-pale/80 text-primary ring-1 ring-primary/20 transition group-hover:bg-blue-pale">
                     <Icon className="h-5 w-5" />
                   </div>
+
                   <h3 className="mt-6 text-lg font-semibold">{title}</h3>
+
                   <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                     {body}
                   </p>
@@ -157,7 +168,7 @@ function LandingPage() {
           </div>
         </section>
 
-        <footer className="relative pt-12 pb-12 text-center text-sm text-muted-foreground">
+        <footer className="relative pb-12 pt-12 text-center text-sm text-muted-foreground">
           <div className="mx-auto max-w-7xl px-6 md:px-8">
             Kenzo Buddy — calm creative coding workspace.
           </div>

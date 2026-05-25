@@ -366,11 +366,11 @@
 @keyframes pulse-slow {
   0%,
   100% {
-    opacity: 0.12;
+    opacity: 0.08;
   }
 
   50% {
-    opacity: 0.24;
+    opacity: 0.18;
   }
 }
 
@@ -385,6 +385,27 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-float-slow,
   .animate-pulse-slow {
+    animation: none;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    translate: 0px 0px;
+  }
+
+  50% {
+    translate: 0px -14px;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow {
     animation: none;
   }
 }
