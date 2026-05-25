@@ -1,9 +1,8 @@
 import duckBg from "@/assets/duck-bg.jpg";
 
 /**
- * Soft decorative duck silhouette behind page content.
- * Faded, large, non-distracting — sits at low opacity, low z-index.
- * Replace src/assets/duck-bg.jpg with another soft duck artwork to swap.
+ * Faint decorative duck silhouette behind page content.
+ * Very low opacity — sits behind main content, not distracting.
  */
 export function DuckBackground() {
   return (
@@ -17,17 +16,28 @@ export function DuckBackground() {
         alt=""
         width={1536}
         height={1536}
-        className="absolute -right-40 -bottom-32 w-[min(120vw,1500px)] opacity-70 mix-blend-multiply dark:mix-blend-soft-light dark:opacity-30 select-none animate-drift"
+        className="absolute -right-32 -bottom-24 w-[min(110vw,1400px)] opacity-[0.07] mix-blend-multiply select-none animate-drift dark:opacity-[0.05] dark:mix-blend-soft-light"
         style={{
           WebkitMaskImage:
-            "radial-gradient(ellipse at 60% 55%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 80%)",
+            "radial-gradient(ellipse at 55% 50%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0) 72%)",
           maskImage:
-            "radial-gradient(ellipse at 60% 55%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 80%)",
+            "radial-gradient(ellipse at 55% 50%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0) 72%)",
         }}
       />
-      {/* Soft pastel light bloom */}
-      <div className="absolute -top-40 -left-32 h-[520px] w-[520px] rounded-full bg-sky/40 blur-3xl" />
-      <div className="absolute top-1/3 -right-32 h-[440px] w-[440px] rounded-full bg-mint/30 blur-3xl" />
+      {/* Soft blooms — dusty blue & cream, not saturated yellow */}
+      <div className="absolute -top-48 -left-40 h-[480px] w-[480px] rounded-full bg-dusty-blue/25 blur-3xl" />
+      <div className="absolute top-1/4 -right-40 h-[400px] w-[400px] rounded-full bg-cream/40 blur-3xl dark:bg-brown/15" />
+      {/* Faint code doodle marks */}
+      <svg
+        className="absolute left-[8%] top-[18%] h-32 w-32 opacity-[0.04] text-foreground dark:opacity-[0.06]"
+        viewBox="0 0 120 80"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <path d="M10 20h40M10 35h28M10 50h36" strokeLinecap="round" />
+        <path d="M70 15c12 0 22 10 22 22s-10 22-22 22" />
+      </svg>
     </div>
   );
 }

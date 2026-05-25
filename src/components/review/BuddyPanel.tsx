@@ -1,4 +1,4 @@
-import buddy from "@/assets/buddy.png";
+import { KenzoMascot } from "@/components/KenzoMascot";
 import { BuddySpeechBubble } from "./BuddySpeechBubble";
 
 /**
@@ -38,14 +38,7 @@ export function BuddyPanel({ message }: { message: string }) {
         {/* Buddy display area — replace with png/gif/mp4 */}
         <div className="absolute inset-x-0 bottom-2 grid place-items-center">
           <div className="animate-float-soft">
-            <img
-              src={buddy}
-              alt="Kenzo the duck buddy"
-              width={768}
-              height={768}
-              loading="lazy"
-              className="h-72 w-72 object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.28)]"
-            />
+            <KenzoMascot size="lg" className="h-72 w-72" />
           </div>
         </div>
       </div>

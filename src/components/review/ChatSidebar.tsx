@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Plus, Flame, MessageSquare } from "lucide-react";
+import { Plus, Flame, MessageSquare, ScanSearch } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -26,10 +26,17 @@ export function ChatSidebar({ sessions, activeId, onSelect, onNew }: Props) {
 
       <button
         onClick={onNew}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground shadow-cozy hover:shadow-float transition"
+        className="inline-flex items-center justify-center gap-2 rounded-full bg-brown py-2.5 text-sm font-semibold text-cream shadow-cozy hover:opacity-90 transition"
       >
-        <Plus className="h-4 w-4" /> New Review
+        <Plus className="h-4 w-4" /> New chat
       </button>
+
+      <Link
+        to="/review"
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+      >
+        <ScanSearch className="h-4 w-4" /> Review Mode
+      </Link>
 
       <div className="flex-1 overflow-y-auto">
         <p className="px-2 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">

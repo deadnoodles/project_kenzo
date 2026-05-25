@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Kenzo Buddy design system — cozy by day, warm by night */
+/* Kenzo Buddy — calm creative workspace palette */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -40,12 +40,22 @@
   --color-mint: var(--mint);
   --color-blush: var(--blush);
   --color-lilac: var(--lilac);
+  --color-brown: var(--brown);
+  --color-gold: var(--gold);
+  --color-dusty-blue: var(--dusty-blue);
+  --color-elevated: var(--elevated);
   --color-user-bubble: var(--user-bubble);
   --color-user-bubble-foreground: var(--user-bubble-foreground);
   --color-assistant-bubble: var(--assistant-bubble);
   --color-assistant-bubble-foreground: var(--assistant-bubble-foreground);
   --color-code-bg: var(--code-bg);
   --color-code-fg: var(--code-fg);
+  --color-severity-low: var(--severity-low);
+  --color-severity-low-fg: var(--severity-low-fg);
+  --color-severity-medium: var(--severity-medium);
+  --color-severity-medium-fg: var(--severity-medium-fg);
+  --color-severity-high: var(--severity-high);
+  --color-severity-high-fg: var(--severity-high-fg);
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
   --shadow-cozy: 0 8px 24px -12px var(--shadow-color), 0 2px 6px -2px var(--shadow-color);
@@ -55,99 +65,115 @@
 :root {
   --radius: 1.25rem;
 
-  /* Cozy off-white background, warm ink text */
-  --background: oklch(0.985 0.012 90);
-  --foreground: oklch(0.28 0.04 50);
+  --background: #f6f1e8;
+  --foreground: #3b2a22;
+  --card: #fff9ef;
+  --card-foreground: #3b2a22;
+  --popover: #fff9ef;
+  --popover-foreground: #3b2a22;
 
-  --card: oklch(0.995 0.006 90);
-  --card-foreground: oklch(0.28 0.04 50);
-  --popover: oklch(0.995 0.006 90);
-  --popover-foreground: oklch(0.28 0.04 50);
+  --primary: #d8b85e;
+  --primary-foreground: #3b2a22;
 
-  --primary: oklch(0.86 0.13 90);
-  --primary-foreground: oklch(0.3 0.06 60);
+  --secondary: #a9c7df;
+  --secondary-foreground: #3b2a22;
 
-  --secondary: oklch(0.93 0.04 230);
-  --secondary-foreground: oklch(0.3 0.05 240);
+  --muted: #efe6d8;
+  --muted-foreground: #756357;
 
-  --muted: oklch(0.955 0.012 85);
-  --muted-foreground: oklch(0.5 0.03 60);
+  --accent: #a9c7df;
+  --accent-foreground: #3b2a22;
 
-  --accent: oklch(0.9 0.06 155);
-  --accent-foreground: oklch(0.3 0.06 155);
+  --destructive: #c4846a;
+  --destructive-foreground: #fff9ef;
 
-  --destructive: oklch(0.7 0.13 25);
-  --destructive-foreground: oklch(0.99 0 0);
+  --border: #ded1be;
+  --input: #e8ddd0;
+  --ring: #d8b85e;
 
-  --border: oklch(0.92 0.015 80);
-  --input: oklch(0.94 0.015 80);
-  --ring: oklch(0.82 0.1 90);
+  --cream: #fff9ef;
+  --sky: #a9c7df;
+  --butter: #d8b85e;
+  --mint: #b8cfc4;
+  --blush: #d4a89a;
+  --lilac: #c4b8d4;
+  --brown: #8b6248;
+  --gold: #d8b85e;
+  --dusty-blue: #a9c7df;
+  --elevated: #fff9ef;
 
-  --cream: oklch(0.97 0.018 85);
-  --sky: oklch(0.92 0.045 230);
-  --butter: oklch(0.92 0.1 95);
-  --mint: oklch(0.92 0.06 155);
-  --blush: oklch(0.92 0.04 20);
-  --lilac: oklch(0.9 0.05 300);
+  --user-bubble: #dceaf4;
+  --user-bubble-foreground: #3b2a22;
+  --assistant-bubble: #f0e6d4;
+  --assistant-bubble-foreground: #3b2a22;
+  --code-bg: #3b2a22;
+  --code-fg: #f6f1e8;
 
-  /* Chat bubble + code tokens */
-  --user-bubble: oklch(0.93 0.04 230);
-  --user-bubble-foreground: oklch(0.3 0.05 240);
-  --assistant-bubble: oklch(0.92 0.08 90);
-  --assistant-bubble-foreground: oklch(0.3 0.06 60);
-  --code-bg: oklch(0.28 0.03 60);
-  --code-fg: oklch(0.97 0.018 85);
+  --severity-low: #dceaf4;
+  --severity-low-fg: #4a6278;
+  --severity-medium: #f0e4c4;
+  --severity-medium-fg: #6b5528;
+  --severity-high: #e8d0c4;
+  --severity-high-fg: #6b4030;
 
-  --shadow-color: oklch(0.7 0.05 80 / 0.22);
-  --shadow-color-strong: oklch(0.6 0.08 70 / 0.3);
+  --shadow-color: rgb(59 42 34 / 0.12);
+  --shadow-color-strong: rgb(59 42 34 / 0.2);
 }
 
 .dark {
-  /* Warm charcoal / espresso — Kenzo Buddy at night */
-  --background: oklch(0.21 0.012 50);          /* ~#1E1A17 */
-  --foreground: oklch(0.96 0.018 85);          /* ~#FFF7EA */
+  --background: #1f1714;
+  --foreground: #f5ebdd;
+  --card: #2b211d;
+  --card-foreground: #f5ebdd;
+  --popover: #2b211d;
+  --popover-foreground: #f5ebdd;
 
-  --card: oklch(0.27 0.014 55);                /* ~#302923 */
-  --card-foreground: oklch(0.96 0.018 85);
-  --popover: oklch(0.27 0.014 55);
-  --popover-foreground: oklch(0.96 0.018 85);
+  --primary: #c9a85f;
+  --primary-foreground: #1f1714;
 
-  --primary: oklch(0.82 0.14 88);              /* warm yellow ~#F5C84C */
-  --primary-foreground: oklch(0.22 0.03 55);
+  --secondary: #7fa9c7;
+  --secondary-foreground: #f5ebdd;
 
-  --secondary: oklch(0.31 0.018 55);           /* elevated panel ~#372F28 */
-  --secondary-foreground: oklch(0.96 0.018 85);
+  --muted: #352823;
+  --muted-foreground: #c7b8a8;
 
-  --muted: oklch(0.27 0.014 55);
-  --muted-foreground: oklch(0.66 0.02 60);     /* ~#9E8E7E */
+  --accent: #7fa9c7;
+  --accent-foreground: #f5ebdd;
 
-  --accent: oklch(0.78 0.07 200);              /* soft blue */
-  --accent-foreground: oklch(0.22 0.03 55);
+  --destructive: #b88870;
+  --destructive-foreground: #f5ebdd;
 
-  --destructive: oklch(0.7 0.13 25);
-  --destructive-foreground: oklch(0.99 0 0);
+  --border: #5a463c;
+  --input: #352823;
+  --ring: #c9a85f;
 
-  --border: oklch(0.36 0.018 55);              /* warm border ~#4A4037 */
-  --input: oklch(0.29 0.014 55);
-  --ring: oklch(0.82 0.14 88);
+  --cream: #f5ebdd;
+  --sky: #7fa9c7;
+  --butter: #c9a85f;
+  --mint: #8aafa0;
+  --blush: #b88870;
+  --lilac: #9a8ab0;
+  --brown: #9b6f54;
+  --gold: #c9a85f;
+  --dusty-blue: #7fa9c7;
+  --elevated: #352823;
 
-  --cream: oklch(0.31 0.018 55);
-  --sky: oklch(0.45 0.06 235);
-  --butter: oklch(0.42 0.08 80);
-  --mint: oklch(0.45 0.06 155);
-  --blush: oklch(0.45 0.05 15);
-  --lilac: oklch(0.45 0.06 320);
+  --user-bubble: #3d5a6e;
+  --user-bubble-foreground: #f5ebdd;
+  --assistant-bubble: #4a3828;
+  --assistant-bubble-foreground: #f5ebdd;
+  --code-bg: #171210;
+  --code-fg: #f5ebdd;
 
-  /* Chat bubbles — warm contrast */
-  --user-bubble: oklch(0.46 0.06 235);         /* ~#315B73 soft midnight blue */
-  --user-bubble-foreground: oklch(0.97 0.012 85);
-  --assistant-bubble: oklch(0.36 0.05 65);     /* ~#4A3826 warm brown */
-  --assistant-bubble-foreground: oklch(0.96 0.018 85);
-  --code-bg: oklch(0.17 0.012 50);             /* ~#171412 */
-  --code-fg: oklch(0.94 0.02 85);
+  --severity-low: #2a3d4d;
+  --severity-low-fg: #9ec4df;
+  --severity-medium: #3d3420;
+  --severity-medium-fg: #e0c878;
+  --severity-high: #3d2a22;
+  --severity-high-fg: #d4a898;
 
-  --shadow-color: oklch(0.12 0.01 50 / 0.5);
-  --shadow-color-strong: oklch(0.08 0.01 50 / 0.6);
+  --shadow-color: rgb(0 0 0 / 0.35);
+  --shadow-color-strong: rgb(0 0 0 / 0.5);
 }
 
 @layer base {
@@ -172,7 +198,16 @@
   }
 }
 
-/* Animations */
+@layer utilities {
+  .sketch-border {
+    border: 1.5px solid var(--border);
+    box-shadow: 2px 3px 0 rgb(59 42 34 / 0.04);
+  }
+  .severity-low-bg { background-color: var(--severity-low); color: var(--severity-low-fg); }
+  .severity-medium-bg { background-color: var(--severity-medium); color: var(--severity-medium-fg); }
+  .severity-high-bg { background-color: var(--severity-high); color: var(--severity-high-fg); }
+}
+
 @keyframes pop-in {
   0% { opacity: 0; transform: scale(0.85) translateY(6px); }
   60% { transform: scale(1.04) translateY(0); }
@@ -195,14 +230,14 @@
   50% { transform: translate(4px, -8px); }
 }
 @keyframes buddy-glow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.04); }
 }
 
 .animate-pop-in { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 .animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
 .animate-fade-up { animation: fade-up 0.4s ease-out both; }
-.animate-drift { animation: drift 6s ease-in-out infinite; }
+.animate-drift { animation: drift 8s ease-in-out infinite; }
 .animate-buddy-glow { animation: buddy-glow 5s ease-in-out infinite; }
 
 .typing-dot {

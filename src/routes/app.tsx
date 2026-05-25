@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { DuckBackground } from "@/components/DuckBackground";
+import { AppNav } from "@/components/AppNav";
 import { ChatSidebar, type ChatSession } from "@/components/review/ChatSidebar";
 import { ChatArea } from "@/components/review/ChatArea";
 import { BuddyPanel } from "@/components/review/BuddyPanel";
@@ -184,7 +185,10 @@ const handleSend = async (
   return (
     <div className="relative min-h-screen">
       <DuckBackground />
-      <div className="mx-auto grid h-screen w-full grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)_360px]">
+      <div className="border-b border-border/60 bg-card/50 backdrop-blur md:hidden">
+        <AppNav />
+      </div>
+      <div className="mx-auto grid h-[calc(100vh-57px)] w-full grid-cols-1 md:h-screen md:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)_360px]">
         <div className="hidden md:block">
           <ChatSidebar
             sessions={sessions}

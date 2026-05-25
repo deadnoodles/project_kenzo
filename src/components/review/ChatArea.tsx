@@ -22,7 +22,7 @@ export function ChatArea({ title, messages, onSend, isThinking }: Props) {
       <header className="flex items-center justify-between border-b border-border bg-card/60 px-6 py-3 backdrop-blur">
         <div className="min-w-0">
           <h1 className="truncate font-display text-lg">{title}</h1>
-          <p className="text-xs text-muted-foreground">A friendly walkthrough of your code</p>
+          <p className="text-xs text-muted-foreground">Chat Mode — ask follow-ups about your code</p>
         </div>
       </header>
 
