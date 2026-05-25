@@ -39,7 +39,7 @@ function severityLineClass(severity: ReviewHighlight["severity"], active: boolea
   const base =
     severity === "high"
       ? "bg-blush/45 ring-blush/50"
-      : "bg-gold/30 ring-gold/45";
+      : "bg-primary/30 ring-primary/45";
   return `${base} ${active ? "ring-2" : "ring-1 hover:brightness-110"} cursor-pointer rounded-md transition`;
 }
 
@@ -48,9 +48,9 @@ function MiniDialogue({ text }: { text: string }) {
     <motion.div
       initial={{ opacity: 0, y: 6, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      className="mt-3 rounded-lg border-[3px] border-cream/90 bg-[#1a1411] px-3 py-2.5"
+      className="mt-3 rounded-lg border-[3px] border-blue-pale/80 bg-blue-surface px-3 py-2.5"
     >
-      <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-gold">
+      <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-primary">
         Kenzo
       </p>
       <p className="mt-1 font-mono text-xs leading-relaxed text-cream">{text}</p>
@@ -124,7 +124,7 @@ function ChatPreviewPanel() {
   return (
     <div>
       <div className="flex items-center gap-2 border-b border-border pb-3">
-        <span className="rounded-full bg-gold/30 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+        <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-primary">
           Chat
         </span>
         <span className="text-xs text-muted-foreground">kenzo.chat</span>
@@ -147,7 +147,7 @@ function ChatPreviewPanel() {
         <span className="flex-1 text-xs text-muted-foreground">
           Ask Kenzo about your code…
         </span>
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-brown text-cream">
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
           <Send className="h-3.5 w-3.5" />
         </span>
       </div>

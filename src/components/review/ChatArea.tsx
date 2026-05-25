@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageBubble, type Message } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
+import { SettingsDialog } from "@/components/SettingsDialog";
+import { useAppSettings } from "@/hooks/use-app-settings";
 
 type Props = {
   title: string;
@@ -12,30 +14,44 @@ type Props = {
 export function ChatArea({ title, messages, onSend, isThinking }: Props) {
   const [thinkingMode, setThinkingMode] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const { settings } = useAppSettings();
+
+  const maxW = settings.spaciousLayout ? "max-w-4xl" : "max-w-3xl";
+  const padX = settings.spaciousLayout ? "px-12" : "px-10";
+  const padY = settings.spaciousLayout ? "py-10" : "py-8";
+  const msgGap = settings.spaciousLayout ? "gap-7" : "gap-6";
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isThinking]);
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="flex items-center justify-between border-b border-border bg-card/60 px-6 py-3 backdrop-blur">
+    <div className="flex h-full min-w-0 flex-col">
+      <header
+        className={`flex items-center justify-between border-b border-border bg-card/60 ${padX} py-5 backdrop-blur`}
+      >
         <div className="min-w-0">
-          <h1 className="truncate font-display text-lg">{title}</h1>
-          <p className="text-xs text-muted-foreground">Chat Mode — ask follow-ups about your code</p>
+          <h1 className="truncate font-display text-xl">{title}</h1>
+          <p className="text-sm text-muted-foreground">
+            Chat Mode — ask follow-ups about your code
+          </p>
+        </div>
+        <div className="md:hidden">
+          <SettingsDialog />
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-6 py-6">
-        <div className="mx-auto flex max-w-3xl flex-col gap-4">
+      <div className={`flex-1 overflow-y-auto ${padX} ${padY}`}>
+        <div className={`mx-auto flex w-full ${maxW} flex-col ${msgGap}`}>
           {messages.length === 0 && !isThinking && (
-            <div className="mx-auto mt-16 max-w-md rounded-3xl border border-border bg-card/70 p-6 text-center shadow-cozy backdrop-blur">
-              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-primary/30 text-xl">
+            <div className="mx-auto mt-20 max-w-md rounded-3xl border border-border bg-card/70 p-10 text-center shadow-cozy backdrop-blur">
+              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-pale/80 text-2xl">
                 🦆
               </div>
-              <h3 className="mt-3 font-display text-lg">Fresh review, fresh start</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Paste some code, ask a question, or drop a screenshot — Kenzo Buddy is listening.
+              <h3 className="mt-5 font-display text-xl">Fresh review, fresh start</h3>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                Paste some code, ask a question, or drop a screenshot — Kenzo is
+                listening.
               </p>
             </div>
           )}
@@ -53,8 +69,8 @@ export function ChatArea({ title, messages, onSend, isThinking }: Props) {
         </div>
       </div>
 
-      <div className="border-t border-border bg-card/40 px-6 py-4 backdrop-blur">
-        <div className="mx-auto max-w-3xl">
+      <div className={`border-t border-border bg-card/40 ${padX} py-6 backdrop-blur`}>
+        <div className={`mx-auto w-full ${maxW}`}>
           <ChatInput
             onSend={onSend}
             thinkingMode={thinkingMode}

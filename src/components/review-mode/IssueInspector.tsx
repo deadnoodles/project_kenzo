@@ -32,7 +32,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
   const suggestion = issue?.suggestion?.trim();
 
   const idleText = hasReview
-    ? "Click a highlighted line — I'll break down what's wrong and how to fix it."
+    ? "Click a highlighted line — I'll explain what's wrong and how to fix it."
     : "Paste code and hit Review. I'll flag lines worth a closer look.";
 
   return (
@@ -47,7 +47,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
       <div className="relative mt-4 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-dusty-blue/20 to-background p-3">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-4 bottom-8 h-16 rounded-full bg-gold/15 blur-2xl animate-buddy-glow"
+          className="pointer-events-none absolute inset-x-4 bottom-8 h-16 rounded-full bg-primary/20 blur-2xl animate-buddy-glow"
         />
         <div className="flex justify-center">
           <KenzoMascot size="md" className="animate-float-soft h-36 w-36" />
@@ -80,17 +80,17 @@ export function IssueInspector({ issue, hasReview }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22 }}
-            className="flex-1 overflow-y-auto rounded-2xl border border-cream/20 bg-[#1a1411] p-4"
+            className="flex-1 overflow-y-auto rounded-2xl border border-primary/15 bg-blue-surface p-4"
           >
-            <p className="font-mono text-xs font-bold uppercase tracking-wider text-gold">
+            <p className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
               Kenzo
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-cream">
+            <p className="mt-2 text-base leading-relaxed text-cream">
               {explanation ?? idleText}
             </p>
             {suggestion ? (
-              <p className="mt-4 border-t border-cream/15 pt-3 text-sm leading-relaxed text-cream/80">
-                <span className="font-semibold text-gold">Suggestion:</span>{" "}
+              <p className="mt-4 border-t border-cream/15 pt-3 text-base leading-relaxed text-cream/80">
+                <span className="font-semibold text-primary">Suggestion:</span>{" "}
                 {suggestion}
               </p>
             ) : null}

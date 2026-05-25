@@ -13,7 +13,7 @@ type Props = {
 function severityClass(severity: ReviewIssue["severity"], selected: boolean) {
   const map = {
     low: "bg-dusty-blue/35 text-code-fg ring-dusty-blue/50",
-    medium: "bg-gold/30 text-code-fg ring-gold/45",
+    medium: "bg-primary/30 text-code-fg ring-primary/45",
     high: "bg-blush/40 text-code-fg ring-blush/50",
   } as const;
   const base = map[severity];

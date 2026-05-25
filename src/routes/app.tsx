@@ -1,23 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { DuckBackground } from "@/components/DuckBackground";
 import { AppNav } from "@/components/AppNav";
 import { ChatSidebar, type ChatSession } from "@/components/review/ChatSidebar";
 import { ChatArea } from "@/components/review/ChatArea";
 import { BuddyPanel } from "@/components/review/BuddyPanel";
-
 import { DailyChallenge } from "@/components/review/DailyChallenge";
+import { useAppSettings } from "@/hooks/use-app-settings";
 import type { Message } from "@/components/review/MessageBubble";
-import {
-  extractCode,    
-  deriveTitle,
-} from "@/lib/buddy-replies";
+import { extractCode, deriveTitle } from "@/lib/buddy-replies";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
     meta: [
       { title: "Your review — Kenzo Buddy" },
-      { name: "description", content: "Chat with Kenzo Buddy, your relaxed AI code review companion." },
+      {
+        name: "description",
+        content: "Chat with Kenzo Buddy, your relaxed AI code review companion.",
+      },
     ],
   }),
   component: ReviewApp,
@@ -58,6 +58,7 @@ const seedSecondary = (title: string): Session => ({
 });
 
 function ReviewApp() {
+  const { settings } = useAppSettings();
   const [sessions, setSessions] = useState<Session[]>(() => [
     seedSession(),
     seedSecondary("Fix Python script"),
@@ -65,15 +66,18 @@ function ReviewApp() {
   ]);
   const [activeId, setActiveId] = useState<string>(() => sessions[0]?.id ?? "");
   const [thinkingMap, setThinkingMap] = useState<Record<string, boolean>>({});
-  const [buddyMessage, setBuddyMessage] = useState(
-    "Hey. I'm Kenzo. Show me what you've got.",
-  );
+  const [buddyMessage, setBuddyMessage] = useState("");
 
   const active = useMemo(
     () => sessions.find((s) => s.id === activeId) ?? sessions[0],
     [sessions, activeId],
   );
   const isThinking = !!thinkingMap[active?.id ?? ""];
+
+  const sidebarW = settings.spaciousLayout ? "340px" : "300px";
+  const buddyW = settings.spaciousLayout ? "420px" : "380px";
+  const colGap = settings.spaciousLayout ? "2.75rem" : "2rem";
+  const pagePad = settings.spaciousLayout ? "2.5rem" : "2rem";
 
   const handleNew = () => {
     const fresh: Session = {
@@ -83,104 +87,105 @@ function ReviewApp() {
     };
     setSessions((s) => [fresh, ...s]);
     setActiveId(fresh.id);
-    setBuddyMessage("Fresh chat. Try to impress me.");
+    setBuddyMessage("");
   };
 
-const handleSend = async (
-  text: string,
-  attachment?: { type: "image"; name: string },
-) => {
-  if (!active) return;
+  const handleSend = async (
+    text: string,
+    attachment?: { type: "image"; name: string },
+  ) => {
+    if (!active) return;
 
-  const sessionId = active.id;
-  const code = extractCode(text);
+    const sessionId = active.id;
+    const code = extractCode(text);
 
-  const userMsg: Message = {
-    id: crypto.randomUUID(),
-    role: "user",
-    content: text,
-    code,
-    attachment,
-    timestamp: Date.now(),
-  };
-
-  setSessions((prev) =>
-    prev.map((s) =>
-      s.id === sessionId
-        ? {
-            ...s,
-            title: s.messages.length === 0 ? deriveTitle(text) : s.title,
-            messages: [...s.messages, userMsg],
-          }
-        : s,
-    ),
-  );
-
-  setThinkingMap((m) => ({ ...m, [sessionId]: true }));
-  setBuddyMessage("Hmm. Let me take a look…");
-
-  try {
-    const currentSession = sessions.find((s) => s.id === sessionId);
-
-    const response = await fetch("http://localhost:3001/api/review", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: text,
-        code,
-        attachment,
-        chatHistory: currentSession?.messages ?? [],
-      }),
-    });
-
-    const data = await response.json();
-
-    const assistantMsg: Message = {
+    const userMsg: Message = {
       id: crypto.randomUUID(),
-      role: "assistant",
-      content: data.reply || "I reviewed it, but I have no dramatic comments this time.",
+      role: "user",
+      content: text,
+      code,
+      attachment,
       timestamp: Date.now(),
     };
 
     setSessions((prev) =>
       prev.map((s) =>
         s.id === sessionId
-          ? { ...s, messages: [...s.messages, assistantMsg] }
+          ? {
+              ...s,
+              title: s.messages.length === 0 ? deriveTitle(text) : s.title,
+              messages: [...s.messages, userMsg],
+            }
           : s,
       ),
     );
 
-    setBuddyMessage(
-      data.buddyBubble ||
-        data.reply?.split("\n")[0]?.slice(0, 90) ||
-        "Not bad. Could be cleaner, obviously.",
-    );
-  } catch (error) {
-    console.error("Kenzo review failed:", error);
+    setThinkingMap((m) => ({ ...m, [sessionId]: true }));
+    setBuddyMessage("Hmm. Let me take a look…");
 
-    const errorMsg: Message = {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content:
-        "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
-      timestamp: Date.now(),
-    };
+    try {
+      const currentSession = sessions.find((s) => s.id === sessionId);
 
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === sessionId
-          ? { ...s, messages: [...s.messages, errorMsg] }
-          : s,
-      ),
-    );
+      const response = await fetch("http://localhost:3001/api/review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: text,
+          code,
+          attachment,
+          chatHistory: currentSession?.messages ?? [],
+        }),
+      });
 
-    setBuddyMessage("Not my finest moment. Try again.");
-  } finally {
-    setThinkingMap((m) => ({ ...m, [sessionId]: false }));
-  }
-};
+      const data = await response.json();
+
+      const assistantMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content:
+          data.reply || "I reviewed it, but I have no dramatic comments this time.",
+        timestamp: Date.now(),
+      };
+
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId
+            ? { ...s, messages: [...s.messages, assistantMsg] }
+            : s,
+        ),
+      );
+
+      setBuddyMessage(
+        data.buddyBubble ||
+          data.reply?.split("\n")[0]?.slice(0, 90) ||
+          "",
+      );
+    } catch (error) {
+      console.error("Kenzo review failed:", error);
+
+      const errorMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content:
+          "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
+        timestamp: Date.now(),
+      };
+
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId
+            ? { ...s, messages: [...s.messages, errorMsg] }
+            : s,
+        ),
+      );
+
+      setBuddyMessage("Not my finest moment. Try again.");
+    } finally {
+      setThinkingMap((m) => ({ ...m, [sessionId]: false }));
+    }
+  };
 
   return (
     <div className="relative min-h-screen">
@@ -188,7 +193,17 @@ const handleSend = async (
       <div className="border-b border-border/60 bg-card/50 backdrop-blur md:hidden">
         <AppNav />
       </div>
-      <div className="mx-auto grid h-[calc(100vh-57px)] w-full grid-cols-1 md:h-screen md:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)_360px]">
+      <div
+        className="mx-auto grid h-[calc(100vh-57px)] w-full max-w-[100rem] grid-cols-1 md:h-screen md:grid-cols-[var(--sidebar)_minmax(0,1fr)] xl:grid-cols-[var(--sidebar)_minmax(0,1fr)_var(--buddy)]"
+        style={
+          {
+            "--sidebar": sidebarW,
+            "--buddy": buddyW,
+            columnGap: colGap,
+            paddingInline: pagePad,
+          } as CSSProperties
+        }
+      >
         <div className="hidden md:block">
           <ChatSidebar
             sessions={sessions}
@@ -209,8 +224,12 @@ const handleSend = async (
           )}
         </main>
 
-        <aside className="hidden h-screen flex-col gap-4 overflow-y-auto p-4 xl:flex">
-          <div className="flex-1 min-h-[520px]">
+        <aside
+          className={`hidden h-screen flex-col overflow-y-auto xl:flex ${
+            settings.spaciousLayout ? "gap-8 py-8 pl-2" : "gap-6 py-6 pl-2"
+          }`}
+        >
+          <div className="min-h-[480px] flex-1">
             <BuddyPanel message={buddyMessage} />
           </div>
           <DailyChallenge />

@@ -23,7 +23,7 @@ export function ModeToggle({ mode, onChange }: Props) {
       aria-label="Preview mode"
     >
       <motion.div
-        className="absolute inset-y-1 rounded-full bg-gold/35 ring-1 ring-gold/40"
+        className="absolute inset-y-1 rounded-full bg-blue-pale/70 ring-1 ring-primary/25"
         style={{ width: "calc(50% - 4px)", left: 4 }}
         animate={{ x: activeIndex === 0 ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 400, damping: 34 }}

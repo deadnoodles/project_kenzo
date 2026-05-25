@@ -3,13 +3,42 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 type Mode = "review" | "chat";
 
-const WORD: Record<Mode, string> = {
-  review: "review",
-  chat: "chat",
+const PHRASE: Record<Mode, string> = {
+  chat: "Let's chat together",
+  review: "Let's review together",
 };
 
 function delay(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function renderPhrase(text: string) {
+  const match = text.match(/^Let's (\w+) together$/);
+  if (!match) {
+    return (
+      <>
+        {text}
+        <Cursor />
+      </>
+    );
+  }
+  return (
+    <>
+      Let&apos;s{" "}
+      <span className="text-primary">{match[1]}</span> together
+      <Cursor />
+    </>
+  );
+}
+
+function Cursor() {
+  return (
+    <span
+      className="ml-0.5 inline-block w-[2px] animate-pulse bg-primary align-middle"
+      style={{ height: "0.85em" }}
+      aria-hidden
+    />
+  );
 }
 
 type Props = {
@@ -17,30 +46,30 @@ type Props = {
 };
 
 export function TypewriterHeading({ mode }: Props) {
-  const target = WORD[mode];
+  const target = PHRASE[mode];
   const reducedMotion = usePrefersReducedMotion();
-  const [word, setWord] = useState(target);
+  const [text, setText] = useState(target);
 
   useEffect(() => {
     if (reducedMotion) {
-      setWord(target);
+      setText(target);
       return;
     }
 
     let cancelled = false;
 
     (async () => {
-      let current = word;
+      let current = text;
       if (current === target) return;
 
       while (current.length > 0 && !cancelled) {
-        await delay(38);
+        await delay(32);
         current = current.slice(0, -1);
-        setWord(current);
+        setText(current);
       }
       for (let i = 1; i <= target.length && !cancelled; i++) {
-        await delay(52);
-        setWord(target.slice(0, i));
+        await delay(42);
+        setText(target.slice(0, i));
       }
     })();
 
@@ -51,17 +80,8 @@ export function TypewriterHeading({ mode }: Props) {
   }, [target, reducedMotion]);
 
   return (
-    <h1 className="font-display text-4xl leading-[1.08] tracking-tight text-foreground md:text-5xl lg:text-6xl">
-      Let&apos;s{" "}
-      <span className="inline-block min-w-[5.5ch] text-left text-gold">
-        {word}
-        <span
-          className="ml-0.5 inline-block w-[2px] animate-pulse bg-gold align-middle"
-          style={{ height: "0.85em" }}
-          aria-hidden
-        />
-      </span>{" "}
-      together
+    <h1 className="font-display text-4xl leading-[1.12] tracking-tight text-foreground md:text-5xl lg:text-6xl">
+      {renderPhrase(text)}
     </h1>
   );
 }

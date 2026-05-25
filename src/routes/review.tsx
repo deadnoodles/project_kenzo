@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { FilePlus2 } from "lucide-react";
 import { DuckBackground } from "@/components/DuckBackground";
 import { AppNav } from "@/components/AppNav";
@@ -8,6 +8,7 @@ import { CodeViewer } from "@/components/review-mode/CodeViewer";
 import { IssueInspector } from "@/components/review-mode/IssueInspector";
 import { ReviewSummary } from "@/components/review-mode/ReviewSummary";
 import { fetchCodeReview, pickPrimaryIssue, type ReviewData } from "@/lib/review-api";
+import { useAppSettings } from "@/hooks/use-app-settings";
 
 export const Route = createFileRoute("/review")({
   head: () => ({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/review")({
 });
 
 function ReviewModePage() {
+  const { settings } = useAppSettings();
   const [draft, setDraft] = useState("");
   const [review, setReview] = useState<ReviewData | null>(null);
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
@@ -61,20 +63,23 @@ function ReviewModePage() {
     setReviewError(null);
   };
 
+  const gridGap = settings.spaciousLayout ? "gap-10" : "gap-8";
+  const inspectorW = settings.spaciousLayout ? "320px" : "300px";
+
   return (
     <div className="relative min-h-screen">
       <DuckBackground />
       <AppNav />
 
-      <main className="mx-auto w-full max-w-[1240px] px-6 pb-16">
-        <div className="mb-8 animate-fade-up text-center md:text-left">
-          <span className="inline-flex rounded-full bg-dusty-blue/40 px-3 py-1 text-xs font-medium text-foreground">
+      <main className="page-container-narrow pb-20">
+        <div className="mb-10 animate-fade-up text-center md:text-left">
+          <span className="inline-flex rounded-full bg-primary/15 px-3 py-1 text-sm font-medium text-primary">
             Review Mode — AI highlights, inspector on click
           </span>
-          <h1 className="mt-3 font-display text-3xl tracking-tight md:text-4xl">
+          <h1 className="mt-4 font-display text-4xl tracking-tight md:text-5xl">
             Visual code review
           </h1>
-          <p className="mt-2 mx-auto max-w-2xl text-muted-foreground md:mx-0">
+          <p className="mt-3 mx-auto max-w-2xl text-lg text-muted-foreground md:mx-0">
             Paste code for a live review from Kenzo. Click any highlight — the
             inspector on the right explains that exact line.
           </p>
@@ -89,7 +94,7 @@ function ReviewModePage() {
             error={reviewError}
           />
         ) : (
-          <section className="space-y-5">
+          <section className="space-y-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
                 <ReviewSummary issues={review.issues} />
@@ -97,14 +102,17 @@ function ReviewModePage() {
               <button
                 type="button"
                 onClick={resetReview}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border-2 border-gold/50 bg-gold/20 px-5 py-2.5 text-sm font-semibold text-foreground shadow-cozy transition hover:-translate-y-0.5 hover:bg-gold/35 hover:shadow-float"
+                className="btn-primary shrink-0 border-2 border-primary/40"
               >
                 <FilePlus2 className="h-4 w-4" />
                 Review new code
               </button>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
+            <div
+              className={`grid ${gridGap} lg:grid-cols-[minmax(0,1fr)_var(--inspector)]`}
+              style={{ "--inspector": inspectorW } as CSSProperties}
+            >
               <div className="min-w-0">
                 <CodeViewer
                   code={review.code}
@@ -118,7 +126,7 @@ function ReviewModePage() {
             </div>
 
             {review.issues.length === 0 ? (
-              <p className="rounded-2xl border border-border bg-card/80 px-4 py-3 text-sm text-muted-foreground">
+              <p className="rounded-2xl border border-border bg-card/80 px-5 py-4 text-base text-muted-foreground">
                 Kenzo finished but didn&apos;t flag specific lines. Try Chat Mode
                 for a conversational review, or paste a longer snippet.
               </p>

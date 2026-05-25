@@ -48,7 +48,7 @@ export function ReviewInput({
           type="button"
           onClick={onReview}
           disabled={disabled || !value.trim() || isReviewing}
-          className="inline-flex items-center gap-2 rounded-full bg-brown px-6 py-2.5 text-sm font-semibold text-cream shadow-cozy transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-primary py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
         >
           <ScanSearch className="h-4 w-4" />
           {isReviewing ? "Kenzo is reviewing…" : "Review"}

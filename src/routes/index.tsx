@@ -90,12 +90,12 @@ function LandingPage() {
       <DuckBackground />
       <AppNav showAuth />
 
-      <section className="mx-auto max-w-6xl px-4 pt-6 pb-16 sm:px-6 md:pt-10">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
-          <div className="animate-fade-up">
+      <section className="page-container pt-10 pb-28 md:pt-14 md:pb-32">
+        <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-24">
+          <div className="animate-fade-up max-w-xl">
             <ModeToggle mode={mode} onChange={setMode} />
 
-            <div className="mt-6">
+            <div className="mt-8">
               <TypewriterHeading mode={mode} />
             </div>
 
@@ -104,7 +104,7 @@ function LandingPage() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="mt-5 max-w-lg text-lg text-muted-foreground"
+              className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground"
             >
               {copy.subtitle}
             </motion.p>
@@ -114,56 +114,54 @@ function LandingPage() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.05 }}
-              className="mt-8 flex flex-wrap items-center gap-3"
+              className="mt-10 flex flex-wrap items-center gap-4"
             >
-              <Link
-                to={copy.primary.to}
-                className="group inline-flex items-center gap-2 rounded-full bg-brown px-6 py-3 text-sm font-semibold text-cream shadow-cozy transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-float"
-              >
+              <Link to={copy.primary.to} className="btn-primary group">
                 {copy.primary.label}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link
-                to={copy.secondary.to}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition hover:-translate-y-0.5 hover:bg-card hover:shadow-cozy"
-              >
+              <Link to={copy.secondary.to} className="btn-secondary">
                 {copy.secondary.label}
               </Link>
             </motion.div>
 
-            <p className="mt-5 text-sm text-muted-foreground">
+            <p className="mt-6 text-base text-muted-foreground">
               Kenzo Buddy — review code visually or chat about it.
             </p>
           </div>
 
-          <div id="preview" className="animate-pop-in">
+          <div id="preview" className="animate-pop-in lg:pl-4">
             <HeroPreview mode={mode} />
           </div>
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="mb-8">
-          <h2 className="font-display text-2xl md:text-3xl">What Kenzo does</h2>
-          <p className="mt-2 text-muted-foreground">Minimal cards, maximum clarity.</p>
+      <section id="features" className="page-container pb-28 pt-4">
+        <div className="mb-12">
+          <h2 className="font-display text-3xl md:text-4xl">What Kenzo does</h2>
+          <p className="mt-3 text-lg text-muted-foreground">
+            Minimal cards, maximum clarity.
+          </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
           {features.map(({ icon: Icon, title, body }) => (
             <div
               key={title}
-              className="rounded-3xl border border-border bg-card/80 p-5 shadow-cozy sketch-border backdrop-blur transition hover:-translate-y-0.5"
+              className="group rounded-3xl border border-border bg-card/90 p-7 shadow-cozy sketch-border backdrop-blur transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-float"
             >
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-dusty-blue/40 text-foreground">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-pale/80 text-primary ring-1 ring-primary/20 transition group-hover:bg-blue-pale">
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-3 font-semibold">{title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+              <h3 className="mt-4 text-lg font-semibold">{title}</h3>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                {body}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      <footer className="mx-auto max-w-6xl px-4 pb-10 text-center text-xs text-muted-foreground sm:px-6">
+      <footer className="page-container pb-12 text-center text-sm text-muted-foreground">
         Kenzo Buddy — calm creative coding workspace.
       </footer>
     </div>
