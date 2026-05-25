@@ -72,10 +72,6 @@ function ReviewApp() {
   );
   const isThinking = !!thinkingMap[active?.id ?? ""];
 
-const sidebarW = "clamp(260px, 16vw, 300px)";
-const buddyW = "260px";
-const colGap = "clamp(1rem, 2vw, 2rem)";
-
   const handleNew = () => {
     const fresh: Session = {
       id: crypto.randomUUID(),
@@ -85,6 +81,30 @@ const colGap = "clamp(1rem, 2vw, 2rem)";
     setSessions((s) => [fresh, ...s]);
     setActiveId(fresh.id);
     setBuddyMessage("");
+  };
+
+  const handleDeleteChat = (sessionId: string) => {
+    setSessions((prev) => {
+      const updated = prev.filter((s) => s.id !== sessionId);
+      if (updated.length === 0) {
+        const fresh: Session = {
+          id: crypto.randomUUID(),
+          title: "New review",
+          messages: [],
+        };
+        setSessions([fresh]);
+        setActiveId(fresh.id);
+        return [fresh];
+      }
+      if (activeId === sessionId) {
+        setActiveId(updated[0]?.id ?? "");
+      }
+      return updated;
+    });
+  };
+
+  const handleShareChat = (sessionId: string) => {
+    console.log("Share chat:", sessionId);
   };
 
   const handleSend = async (
@@ -191,26 +211,21 @@ const colGap = "clamp(1rem, 2vw, 2rem)";
         <AppNav />
       </div>
       <div
-        className="grid h-[calc(100vh-57px)] w-full grid-cols-1 md:h-screen md:grid-cols-[var(--sidebar)_minmax(0,1fr)] xl:grid-cols-[var(--sidebar)_minmax(0,1fr)_var(--buddy)]"
-style={
-  {
-    "--sidebar": sidebarW,
-    "--buddy": buddyW,
-    columnGap: colGap,
-  } as CSSProperties
-}
+        className="grid h-[calc(100vh-57px)] w-full md:h-screen md:grid-cols-[280px_minmax(0,1fr)_260px]"
+        style={{ gap: "0" } as CSSProperties}
       >
-        <div className="hidden h-full min-h-0 min-w-0 overflow-hidden md:block">
+        <div className="hidden h-full min-h-0 min-w-0 overflow-hidden md:flex md:flex-col">
           <ChatSidebar
             sessions={sessions}
             activeId={active?.id ?? ""}
             onSelect={setActiveId}
             onNew={handleNew}
+            onDelete={handleDeleteChat}
+            onShare={handleShareChat}
           />
         </div>
 
-       <main className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden pr-0">
-
+        <main className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           {active && (
             <ChatArea
               title={active.title}
@@ -221,11 +236,7 @@ style={
           )}
         </main>
 
-        <aside
-className={`hidden h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-y-auto pr-6 xl:flex ${
-  settings.spaciousLayout ? "gap-4 pb-8 pt-28" : "gap-3 pb-6 pt-24"
-}`}
-        >
+        <aside className="hidden h-full min-h-0 min-w-0 overflow-y-auto xl:flex xl:flex-col xl:gap-4 xl:pb-8 xl:pt-8">
           <BuddyPanel message={buddyMessage} />
           <DailyChallenge />
         </aside>

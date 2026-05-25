@@ -1,15 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { Plus, MessageSquare, ScanSearch } from "lucide-react";
+import { Plus, MessageSquare, ScanSearch, MoreVertical } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { LearningStreakCard } from "./LearningStreakCard";
 import { useAppSettings } from "@/hooks/use-app-settings";
+import { useState } from "react";
 
 export type ChatSession = {
   id: string;
   title: string;
-  messages: unknown[];
 };
 
 type Props = {
@@ -17,12 +17,15 @@ type Props = {
   activeId: string;
   onSelect: (id: string) => void;
   onNew: () => void;
+  onDelete: (id: string) => void;
+  onShare: (id: string) => void;
 };
 
-export function ChatSidebar({ sessions, activeId, onSelect, onNew }: Props) {
+export function ChatSidebar({ sessions, activeId, onSelect, onNew, onDelete, onShare }: Props) {
   const { settings } = useAppSettings();
   const gap = settings.spaciousLayout ? "gap-3.5" : "gap-3";
 const pad = settings.spaciousLayout ? "px-4 py-4" : "px-4 py-4";
+const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   return (
     <aside
@@ -91,6 +94,12 @@ const pad = settings.spaciousLayout ? "px-4 py-4" : "px-4 py-4";
       >
         ← Back to home
       </Link>
+
+      <div className="border-t border-border/40 p-3">
+        <button className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors">
+          Back to home
+        </button>
+      </div>
     </aside>
   );
 }
