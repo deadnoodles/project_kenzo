@@ -30,9 +30,9 @@ export function ChatInput({ onSend, thinkingMode, onToggleThinking, disabled }: 
   return (
     <form
       onSubmit={submit}
-      className="rounded-[1.75rem] border border-border bg-card/95 p-2 pl-4 shadow-cozy backdrop-blur"
+      className="w-full rounded-[1.75rem] border border-border bg-card/95 p-4 pl-5 shadow-cozy backdrop-blur"
     >
-      <div className="flex items-end gap-2">
+      <div className="flex items-end gap-4 min-w-0">
         <textarea
           rows={1}
           value={value}
@@ -44,7 +44,7 @@ export function ChatInput({ onSend, thinkingMode, onToggleThinking, disabled }: 
             }
           }}
           placeholder="Paste code or ask Kenzo Buddy anything…"
-          className="max-h-40 flex-1 resize-none bg-transparent py-2.5 text-sm outline-none placeholder:text-muted-foreground"
+          className="max-h-40 flex-1 min-w-0 resize-none bg-transparent py-4 text-sm outline-none placeholder:text-muted-foreground"
         />
         <div className="flex items-center gap-1">
           <IconBtn label="Upload screenshot" onClick={sendImage}>

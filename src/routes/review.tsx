@@ -63,23 +63,23 @@ function ReviewModePage() {
     setReviewError(null);
   };
 
-  const gridGap = settings.spaciousLayout ? "gap-10" : "gap-8";
-  const inspectorW = settings.spaciousLayout ? "320px" : "300px";
+  const gridGap = settings.spaciousLayout ? "gap-20" : "gap-16";
+  const inspectorW = settings.spaciousLayout ? "420px" : "380px";
 
   return (
     <div className="relative min-h-screen">
       <DuckBackground />
       <AppNav />
 
-      <main className="page-container-narrow pb-20">
-        <div className="mb-10 animate-fade-up text-center md:text-left">
+      <main className="page-container-narrow pb-36 pt-4">
+        <div className="mb-20 animate-fade-up text-center md:text-left">
           <span className="inline-flex rounded-full bg-primary/15 px-3 py-1 text-sm font-medium text-primary">
             Review Mode — AI highlights, inspector on click
           </span>
-          <h1 className="mt-4 font-display text-4xl tracking-tight md:text-5xl">
+          <h1 className="mt-8 font-display text-4xl tracking-tight md:text-5xl">
             Visual code review
           </h1>
-          <p className="mt-3 mx-auto max-w-2xl text-lg text-muted-foreground md:mx-0">
+          <p className="mt-6 mx-auto max-w-3xl text-lg leading-relaxed text-muted-foreground md:mx-0">
             Paste code for a live review from Kenzo. Click any highlight — the
             inspector on the right explains that exact line.
           </p>
@@ -94,8 +94,8 @@ function ReviewModePage() {
             error={reviewError}
           />
         ) : (
-          <section className="space-y-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
+          <section className="space-y-14">
+            <div className="flex flex-wrap items-start justify-between gap-8">
               <div className="min-w-0 flex-1">
                 <ReviewSummary issues={review.issues} />
               </div>

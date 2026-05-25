@@ -229,15 +229,15 @@
 @layer utilities {
   .page-container {
     width: 100%;
-    max-width: 90rem;
+    max-width: 118rem;
     margin-inline: auto;
-    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+    padding-inline: clamp(2.25rem, 6vw, 4.5rem);
   }
   .page-container-narrow {
     width: 100%;
-    max-width: 82rem;
+    max-width: 112rem;
     margin-inline: auto;
-    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+    padding-inline: clamp(2.25rem, 6vw, 4.5rem);
   }
   .sketch-border {
     border: 1.5px solid var(--border);

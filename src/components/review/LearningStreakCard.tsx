@@ -8,7 +8,7 @@ export function LearningStreakCard() {
   if (!settings.showLearningStreak) return null;
 
   return (
-    <div className="relative rounded-3xl border border-border bg-primary/10 p-4">
+    <div className="relative rounded-3xl border border-border bg-primary/10 p-5">
       <div className="absolute right-2 top-2">
         <WidgetHideMenu
           onHide={() => setSetting("showLearningStreak", false)}

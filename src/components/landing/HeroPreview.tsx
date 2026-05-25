@@ -161,7 +161,7 @@ type Props = {
 
 export function HeroPreview({ mode }: Props) {
   return (
-    <div className="rounded-[2rem] border border-border bg-card/90 p-5 shadow-float sketch-border backdrop-blur">
+    <div className="rounded-[2rem] border border-border bg-card/90 p-9 shadow-float sketch-border backdrop-blur">
       <AnimatePresence mode="wait">
         <motion.div
           key={mode}

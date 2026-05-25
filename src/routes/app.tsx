@@ -74,10 +74,9 @@ function ReviewApp() {
   );
   const isThinking = !!thinkingMap[active?.id ?? ""];
 
-  const sidebarW = settings.spaciousLayout ? "340px" : "300px";
-  const buddyW = settings.spaciousLayout ? "420px" : "380px";
-  const colGap = settings.spaciousLayout ? "2.75rem" : "2rem";
-  const pagePad = settings.spaciousLayout ? "2.5rem" : "2rem";
+const sidebarW = "clamp(260px, 16vw, 300px)";
+const buddyW = "260px";
+const colGap = "clamp(1rem, 2vw, 2rem)";
 
   const handleNew = () => {
     const fresh: Session = {
@@ -194,17 +193,16 @@ function ReviewApp() {
         <AppNav />
       </div>
       <div
-        className="mx-auto grid h-[calc(100vh-57px)] w-full max-w-[100rem] grid-cols-1 md:h-screen md:grid-cols-[var(--sidebar)_minmax(0,1fr)] xl:grid-cols-[var(--sidebar)_minmax(0,1fr)_var(--buddy)]"
-        style={
-          {
-            "--sidebar": sidebarW,
-            "--buddy": buddyW,
-            columnGap: colGap,
-            paddingInline: pagePad,
-          } as CSSProperties
-        }
+        className="grid h-[calc(100vh-57px)] w-full grid-cols-1 md:h-screen md:grid-cols-[var(--sidebar)_minmax(0,1fr)] xl:grid-cols-[var(--sidebar)_minmax(0,1fr)_var(--buddy)]"
+style={
+  {
+    "--sidebar": sidebarW,
+    "--buddy": buddyW,
+    columnGap: colGap,
+  } as CSSProperties
+}
       >
-        <div className="hidden md:block">
+        <div className="hidden h-full min-h-0 min-w-0 overflow-hidden md:block">
           <ChatSidebar
             sessions={sessions}
             activeId={active?.id ?? ""}
@@ -213,7 +211,8 @@ function ReviewApp() {
           />
         </div>
 
-        <main className="flex h-screen min-w-0 flex-col">
+       <main className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden pr-0">
+
           {active && (
             <ChatArea
               title={active.title}
@@ -225,13 +224,11 @@ function ReviewApp() {
         </main>
 
         <aside
-          className={`hidden h-screen flex-col overflow-y-auto xl:flex ${
-            settings.spaciousLayout ? "gap-8 py-8 pl-2" : "gap-6 py-6 pl-2"
-          }`}
+className={`hidden h-full min-h-0 w-full min-w-0 shrink-0 flex-col overflow-y-auto pr-6 xl:flex ${
+  settings.spaciousLayout ? "gap-4 pb-8 pt-28" : "gap-3 pb-6 pt-24"
+}`}
         >
-          <div className="min-h-[480px] flex-1">
-            <BuddyPanel message={buddyMessage} />
-          </div>
+          <BuddyPanel message={buddyMessage} />
           <DailyChallenge />
         </aside>
       </div>

@@ -31,7 +31,7 @@ function SettingRow({
   onCheckedChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl border border-border bg-muted/40 px-4 py-3">
+    <div className="flex items-start justify-between gap-4 rounded-2xl border border-border bg-muted/40 px-5 py-4">
       <div className="min-w-0 flex-1">
         <Label htmlFor={id} className="text-base font-semibold">
           {label}
@@ -67,7 +67,7 @@ export function SettingsDialog({ triggerClassName = "" }: Props) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 py-2">
+        <div className="space-y-4 py-3">
           <SettingRow
             id="learning-streak"
             label="Show Learning Streak"

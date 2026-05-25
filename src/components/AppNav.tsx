@@ -15,7 +15,7 @@ type Props = {
 
 export function AppNav({ showAuth = false }: Props) {
   return (
-    <header className="page-container relative flex min-h-[4.25rem] items-center justify-between py-5">
+    <header className="page-container relative flex min-h-[5.25rem] items-center justify-between py-7">
       <div className="relative z-10 shrink-0">
         <Logo />
       </div>

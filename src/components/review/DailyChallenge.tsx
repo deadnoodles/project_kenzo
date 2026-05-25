@@ -21,7 +21,7 @@ export function DailyChallenge() {
   if (!settings.showDailyBugChallenge) return null;
 
   return (
-    <div className="relative rounded-3xl border border-border bg-primary/10 p-5 shadow-cozy backdrop-blur">
+    <div className="relative rounded-3xl border border-border bg-primary/10 p-4 shadow-cozy backdrop-blur">
       <div className="absolute right-3 top-3">
         <WidgetHideMenu
           onHide={() => setSetting("showDailyBugChallenge", false)}

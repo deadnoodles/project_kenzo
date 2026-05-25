@@ -4,6 +4,9 @@ import { ChatInput } from "./ChatInput";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { useAppSettings } from "@/hooks/use-app-settings";
 
+/** Shared horizontal padding for header, messages, and input — keeps edges aligned */
+const CHAT_EDGE = "px-4 md:px-6 lg:px-8";
+
 type Props = {
   title: string;
   messages: Message[];
@@ -15,10 +18,6 @@ export function ChatArea({ title, messages, onSend, isThinking }: Props) {
   const [thinkingMode, setThinkingMode] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const { settings } = useAppSettings();
-
-  const maxW = settings.spaciousLayout ? "max-w-4xl" : "max-w-3xl";
-  const padX = settings.spaciousLayout ? "px-12" : "px-10";
-  const padY = settings.spaciousLayout ? "py-10" : "py-8";
   const msgGap = settings.spaciousLayout ? "gap-7" : "gap-6";
 
   useEffect(() => {
@@ -26,26 +25,26 @@ export function ChatArea({ title, messages, onSend, isThinking }: Props) {
   }, [messages, isThinking]);
 
   return (
-    <div className="flex h-full min-w-0 flex-col">
+    <div className="flex h-full w-full min-w-0 flex-1 flex-col">
       <header
-        className={`flex items-center justify-between border-b border-border bg-card/60 ${padX} py-5 backdrop-blur`}
+        className={`flex w-full shrink-0 items-center justify-between border-b border-border bg-card/60 ${CHAT_EDGE} py-4 backdrop-blur`}
       >
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h1 className="truncate font-display text-xl">{title}</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Chat Mode — ask follow-ups about your code
           </p>
         </div>
-        <div className="md:hidden">
+        <div className="shrink-0 md:hidden">
           <SettingsDialog />
         </div>
       </header>
 
-      <div className={`flex-1 overflow-y-auto ${padX} ${padY}`}>
-        <div className={`mx-auto flex w-full ${maxW} flex-col ${msgGap}`}>
+      <div className={`min-h-0 flex-1 overflow-y-auto ${CHAT_EDGE} py-8`}>
+        <div className={`flex w-full flex-col ${msgGap}`}>
           {messages.length === 0 && !isThinking && (
-            <div className="mx-auto mt-20 max-w-md rounded-3xl border border-border bg-card/70 p-10 text-center shadow-cozy backdrop-blur">
-              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-pale/80 text-2xl">
+            <div className="w-full rounded-3xl border border-border bg-card/70 p-10 text-center shadow-cozy backdrop-blur">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-blue-pale/80 text-xl">
                 🦆
               </div>
               <h3 className="mt-5 font-display text-xl">Fresh review, fresh start</h3>
@@ -69,15 +68,15 @@ export function ChatArea({ title, messages, onSend, isThinking }: Props) {
         </div>
       </div>
 
-      <div className={`border-t border-border bg-card/40 ${padX} py-6 backdrop-blur`}>
-        <div className={`mx-auto w-full ${maxW}`}>
-          <ChatInput
-            onSend={onSend}
-            thinkingMode={thinkingMode}
-            onToggleThinking={() => setThinkingMode((v) => !v)}
-            disabled={isThinking}
-          />
-        </div>
+      <div
+        className={`w-full shrink-0 border-t border-border bg-card/40 ${CHAT_EDGE} py-6 backdrop-blur`}
+      >
+        <ChatInput
+          onSend={onSend}
+          thinkingMode={thinkingMode}
+          onToggleThinking={() => setThinkingMode((v) => !v)}
+          disabled={isThinking}
+        />
       </div>
     </div>
   );
