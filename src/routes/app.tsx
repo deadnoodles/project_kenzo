@@ -107,6 +107,15 @@ function ReviewApp() {
     console.log("Share chat:", sessionId);
   };
 
+  const handleRenameChat = (sessionId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === sessionId ? { ...s, title: newTitle.trim() } : s,
+      ),
+    );
+  };
+
   const handleSend = async (
     text: string,
     attachment?: { type: "image"; name: string },
@@ -222,6 +231,7 @@ function ReviewApp() {
             onNew={handleNew}
             onDelete={handleDeleteChat}
             onShare={handleShareChat}
+            onRename={handleRenameChat}
           />
         </div>
 
@@ -232,13 +242,13 @@ function ReviewApp() {
               messages={active.messages}
               onSend={handleSend}
               isThinking={isThinking}
+              onRenameTitle={(newTitle) => handleRenameChat(active.id, newTitle)}
             />
           )}
         </main>
 
-        <aside className="hidden h-full min-h-0 min-w-0 overflow-y-auto xl:flex xl:flex-col xl:gap-4 xl:pb-8 xl:pt-8">
-          <BuddyPanel message={buddyMessage} />
-          <DailyChallenge />
+        <aside className="hidden h-full w-[260px] border-l border-border bg-card/30 p-3 pt-22 xl:flex">
+          <BuddyPanel />
         </aside>
       </div>
     </div>
