@@ -32,10 +32,21 @@ app.get("/", (req, res) => {
 
 app.post("/api/review", async (req, res) => {
   try {
-    const { message, code, chatHistory = [] } = req.body;
+    const { message, code, chatHistory = [], reviewMode = false } = req.body;
+
+    const reviewModeBlock = reviewMode
+      ? `
+Review Mode (visual line review):
+- The user pasted code only. Focus on line-specific issues in the Code block.
+- Each issues[].line must be an accurate 1-based line number in that exact Code text.
+- message must describe what is wrong on THAT line or small block — not unrelated topics.
+- Include 1 to 5 issues when warranted; use an empty issues array if the code is clean.
+`
+      : "";
 
     const prompt = `
 You are Kenzo Buddy, an AI code review companion.
+${reviewModeBlock}
 
 Personality:
 - relaxed
@@ -114,7 +125,7 @@ res.json(data);
 
     res.status(500).json({
       reply:
-        "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
+        "Your API broke, or you're broke.",
       score: 0,
       mood: "unimpressed",
       issues: [],
