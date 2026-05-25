@@ -1,14 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, type CSSProperties } from "react";
-import { DuckBackground } from "@/components/DuckBackground";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+// import { DuckBackground } from "@/components/DuckBackground";
 import { AppNav } from "@/components/AppNav";
 import { ChatSidebar, type ChatSession } from "@/components/review/ChatSidebar";
 import { ChatArea } from "@/components/review/ChatArea";
 import { BuddyPanel } from "@/components/review/BuddyPanel";
-import { DailyChallenge } from "@/components/review/DailyChallenge";
-import { useAppSettings } from "@/hooks/use-app-settings";
 import type { Message } from "@/components/review/types";
 import { extractCode, deriveTitle } from "@/lib/buddy-replies";
+import type { KenzoMood } from "@/components/KenzoMascot";
+import { AppBackground } from "@/components/AppBackground";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -51,26 +58,177 @@ const seedSession = (): Session => ({
   ],
 });
 
-const seedSecondary = (title: string): Session => ({
-  id: crypto.randomUUID(),
-  title,
-  messages: [],
-});
+function getKenzoMoodFromReview(data: any): KenzoMood {
+  if (!data) return "happy";
+
+  if (typeof data.score === "number") {
+    if (data.score >= 80) return "happy";
+    if (data.score >= 50) return "happy";
+    return "angry";
+  }
+
+  const issues = Array.isArray(data.issues) ? data.issues : [];
+
+  if (issues.some((issue) => issue?.severity === "high")) {
+    return "angry";
+  }
+
+  if (issues.length > 0) {
+    return "happy";
+  }
+
+  return "happy";
+}
 
 function ReviewApp() {
-  const { settings } = useAppSettings();
-  const [sessions, setSessions] = useState<Session[]>(() => [
-    seedSession(),
-  ]);
+  const [sessions, setSessions] = useState<Session[]>(() => [seedSession()]);
   const [activeId, setActiveId] = useState<string>(() => sessions[0]?.id ?? "");
   const [thinkingMap, setThinkingMap] = useState<Record<string, boolean>>({});
-  const [buddyMessage, setBuddyMessage] = useState("");
+  const [kenzoMood, setKenzoMood] = useState<KenzoMood>("happy");
+
+  const hasHandledPendingMessageRef = useRef(false);
 
   const active = useMemo(
     () => sessions.find((s) => s.id === activeId) ?? sessions[0],
     [sessions, activeId],
   );
+
   const isThinking = !!thinkingMap[active?.id ?? ""];
+
+  const sendMessageToSession = useCallback(
+    async (
+      sessionId: string,
+      text: string,
+      attachment?: { type: "image"; name: string },
+    ) => {
+      if (!text.trim()) return;
+
+      const currentSession = sessions.find((s) => s.id === sessionId);
+      const code = extractCode(text);
+
+      const userMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: text,
+        code,
+        attachment,
+        timestamp: Date.now(),
+      };
+
+      setKenzoMood("observing");
+      setThinkingMap((prev) => ({ ...prev, [sessionId]: true }));
+
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId
+            ? {
+                ...s,
+                title: s.messages.length === 0 ? deriveTitle(text) : s.title,
+                messages: [...s.messages, userMsg],
+              }
+            : s,
+        ),
+      );
+
+      try {
+        const response = await fetch("http://localhost:3001/api/review", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: text,
+            code,
+            attachment,
+            chatHistory: currentSession?.messages ?? [],
+          }),
+        });
+
+        const data = await response.json();
+
+        const assistantMsg: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            typeof data.reply === "string" && data.reply.trim().length > 0
+              ? data.reply
+              : "I reviewed it, but I have no dramatic comments this time.",
+          timestamp: Date.now(),
+        };
+
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === sessionId
+              ? {
+                  ...s,
+                  messages: [...s.messages, assistantMsg],
+                }
+              : s,
+          ),
+        );
+
+        setKenzoMood(getKenzoMoodFromReview(data));
+      } catch (error) {
+        console.error("Kenzo review failed:", error);
+
+        const errorMsg: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
+          timestamp: Date.now(),
+        };
+
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === sessionId
+              ? {
+                  ...s,
+                  messages: [...s.messages, errorMsg],
+                }
+              : s,
+          ),
+        );
+
+        setKenzoMood("sad");
+      } finally {
+        setThinkingMap((prev) => ({ ...prev, [sessionId]: false }));
+      }
+    },
+    [sessions],
+  );
+
+  const handleSend = useCallback(
+    async (text: string, attachment?: { type: "image"; name: string }) => {
+      if (!active?.id) return;
+      await sendMessageToSession(active.id, text, attachment);
+    },
+    [active?.id, sendMessageToSession],
+  );
+
+  useEffect(() => {
+    if (hasHandledPendingMessageRef.current) return;
+
+    const pendingMessage = sessionStorage.getItem("kenzo_pending_chat_message");
+
+    if (!pendingMessage) return;
+
+    hasHandledPendingMessageRef.current = true;
+    sessionStorage.removeItem("kenzo_pending_chat_message");
+
+    const handoffSession: Session = {
+      id: crypto.randomUUID(),
+      title: "Explain review",
+      messages: [],
+    };
+
+    setSessions((prev) => [handoffSession, ...prev]);
+    setActiveId(handoffSession.id);
+
+    window.setTimeout(() => {
+      sendMessageToSession(handoffSession.id, pendingMessage);
+    }, 150);
+  }, [sendMessageToSession]);
 
   const handleNew = () => {
     const fresh: Session = {
@@ -78,27 +236,31 @@ function ReviewApp() {
       title: "New review",
       messages: [],
     };
-    setSessions((s) => [fresh, ...s]);
+
+    setSessions((prev) => [fresh, ...prev]);
     setActiveId(fresh.id);
-    setBuddyMessage("");
+    setKenzoMood("happy");
   };
 
   const handleDeleteChat = (sessionId: string) => {
     setSessions((prev) => {
       const updated = prev.filter((s) => s.id !== sessionId);
+
       if (updated.length === 0) {
         const fresh: Session = {
           id: crypto.randomUUID(),
           title: "New review",
           messages: [],
         };
-        setSessions([fresh]);
+
         setActiveId(fresh.id);
         return [fresh];
       }
+
       if (activeId === sessionId) {
-        setActiveId(updated[0]?.id ?? "");
+        setActiveId(updated[0].id);
       }
+
       return updated;
     });
   };
@@ -109,6 +271,7 @@ function ReviewApp() {
 
   const handleRenameChat = (sessionId: string, newTitle: string) => {
     if (!newTitle.trim()) return;
+
     setSessions((prev) =>
       prev.map((s) =>
         s.id === sessionId ? { ...s, title: newTitle.trim() } : s,
@@ -116,109 +279,15 @@ function ReviewApp() {
     );
   };
 
-  const handleSend = async (
-    text: string,
-    attachment?: { type: "image"; name: string },
-  ) => {
-    if (!active) return;
 
-    const sessionId = active.id;
-    const code = extractCode(text);
+return (
+  <div className="relative min-h-screen overflow-hidden bg-background">
+    <AppBackground />
 
-    const userMsg: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: text,
-      code,
-      attachment,
-      timestamp: Date.now(),
-    };
-
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === sessionId
-          ? {
-              ...s,
-              title: s.messages.length === 0 ? deriveTitle(text) : s.title,
-              messages: [...s.messages, userMsg],
-            }
-          : s,
-      ),
-    );
-
-    setThinkingMap((m) => ({ ...m, [sessionId]: true }));
-    setBuddyMessage("Hmm. Let me take a look…");
-
-    try {
-      const currentSession = sessions.find((s) => s.id === sessionId);
-
-      const response = await fetch("http://localhost:3001/api/review", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: text,
-          code,
-          attachment,
-          chatHistory: currentSession?.messages ?? [],
-        }),
-      });
-
-      const data = await response.json();
-
-      const assistantMsg: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          data.reply || "I reviewed it, but I have no dramatic comments this time.",
-        timestamp: Date.now(),
-      };
-
-      setSessions((prev) =>
-        prev.map((s) =>
-          s.id === sessionId
-            ? { ...s, messages: [...s.messages, assistantMsg] }
-            : s,
-        ),
-      );
-
-      setBuddyMessage(
-        data.buddyBubble ||
-          data.reply?.split("\n")[0]?.slice(0, 90) ||
-          "",
-      );
-    } catch (error) {
-      console.error("Kenzo review failed:", error);
-
-      const errorMsg: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
-        timestamp: Date.now(),
-      };
-
-      setSessions((prev) =>
-        prev.map((s) =>
-          s.id === sessionId
-            ? { ...s, messages: [...s.messages, errorMsg] }
-            : s,
-        ),
-      );
-
-      setBuddyMessage("Not my finest moment. Try again.");
-    } finally {
-      setThinkingMap((m) => ({ ...m, [sessionId]: false }));
-    }
-  };
-
-  return (
-    <div className="relative min-h-screen">
-      <DuckBackground />
       <div className="border-b border-border/60 bg-card/50 backdrop-blur md:hidden">
         <AppNav />
       </div>
+
       <div
         className="grid h-[calc(100vh-57px)] w-full md:h-screen md:grid-cols-[280px_minmax(0,1fr)_260px]"
         style={{ gap: "0" } as CSSProperties}
@@ -236,7 +305,7 @@ function ReviewApp() {
         </div>
 
         <main className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          {active && (
+          {active ? (
             <ChatArea
               title={active.title}
               messages={active.messages}
@@ -244,11 +313,11 @@ function ReviewApp() {
               isThinking={isThinking}
               onRenameTitle={(newTitle) => handleRenameChat(active.id, newTitle)}
             />
-          )}
+          ) : null}
         </main>
 
-        <aside className="hidden h-full w-[260px] border-l border-border bg-card/30 p-3 pt-22 xl:flex">
-          <BuddyPanel />
+        <aside className="hidden h-full w-[260px] shrink-0 border-l border-border bg-card/30 p-4 pt-12 xl:flex">
+          <BuddyPanel mood={kenzoMood} />
         </aside>
       </div>
     </div>

@@ -4,7 +4,8 @@ import { AppNav } from "@/components/AppNav";
 import { TypewriterHeading } from "@/components/landing/TypewriterHeading";
 import { ModeToggle, type HeroMode } from "@/components/landing/ModeToggle";
 import { HeroPreview } from "@/components/landing/HeroPreview";
-import { LandingBackground } from "@/components/LandingBackground";
+//import { LandingBackground } from "@/components/LandingBackground";
+import { AppBackground } from "@/components/AppBackground";
 
 import {
   ScanSearch,
@@ -94,7 +95,7 @@ function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <LandingBackground />
+      <AppBackground />
 
       <div className="relative z-10">
         <AppNav showAuth />

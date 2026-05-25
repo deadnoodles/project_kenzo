@@ -1,87 +1,69 @@
 import { useEffect, useState } from "react";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-
-type Mode = "review" | "chat";
-
-const PHRASE: Record<Mode, string> = {
-  chat: "Let's chat together",
-  review: "Let's review together",
-};
-
-function delay(ms: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
-}
-
-function renderPhrase(text: string) {
-  const match = text.match(/^Let's (\w+) together$/);
-  if (!match) {
-    return (
-      <>
-        {text}
-        <Cursor />
-      </>
-    );
-  }
-  return (
-    <>
-      Let&apos;s{" "}
-      <span className="text-primary">{match[1]}</span> together
-      <Cursor />
-    </>
-  );
-}
-
-function Cursor() {
-  return (
-    <span
-      className="ml-0.5 inline-block w-[2px] animate-pulse bg-primary align-middle"
-      style={{ height: "0.85em" }}
-      aria-hidden
-    />
-  );
-}
+import type { HeroMode } from "./ModeToggle";
 
 type Props = {
-  mode: Mode;
+  mode: HeroMode;
 };
 
+const getTargetText = (mode: HeroMode) => {
+  return mode === "review" ? "review together" : "code together";
+};
+
+const wait = (ms: number) =>
+  new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+
 export function TypewriterHeading({ mode }: Props) {
-  const target = PHRASE[mode];
-  const reducedMotion = usePrefersReducedMotion();
-  const [text, setText] = useState(target);
+  const targetText = getTargetText(mode);
+  const [displayedText, setDisplayedText] = useState(targetText);
 
   useEffect(() => {
-    if (reducedMotion) {
-      setText(target);
-      return;
-    }
-
     let cancelled = false;
 
-    (async () => {
-      let current = text;
-      if (current === target) return;
+    const animate = async () => {
+      // erase everything after "Let's"
+      let current = displayedText;
 
       while (current.length > 0 && !cancelled) {
-        await delay(32);
         current = current.slice(0, -1);
-        setText(current);
+        setDisplayedText(current);
+        await wait(35);
       }
-      for (let i = 1; i <= target.length && !cancelled; i++) {
-        await delay(42);
-        setText(target.slice(0, i));
+
+      // type new phrase after "Let's"
+      let next = "";
+
+      for (const char of targetText) {
+        if (cancelled) return;
+
+        next += char;
+        setDisplayedText(next);
+        await wait(55);
       }
-    })();
+    };
+
+    if (displayedText !== targetText) {
+      animate();
+    }
 
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target, reducedMotion]);
+  }, [targetText]);
+
+  const [blueWord = "", ...restWords] = displayedText.split(" ");
+  const restText = restWords.join(" ");
 
   return (
-    <h1 className="font-display text-4xl leading-[1.12] tracking-tight text-foreground md:text-5xl lg:text-6xl">
-      {renderPhrase(text)}
+    <h1 className="font-display text-5xl leading-tight tracking-tight text-foreground md:text-6xl">
+      <span>Let&apos;s </span>
+
+      {blueWord ? <span className="text-primary">{blueWord}</span> : null}
+
+      {restText ? <span> {restText}</span> : null}
+
+      <span className="ml-1 text-primary">|</span>
     </h1>
   );
 }
