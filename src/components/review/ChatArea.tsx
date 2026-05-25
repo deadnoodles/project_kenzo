@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pencil } from "lucide-react";
-import { MessageBubble, type Message } from "./MessageBubble";
+import type { Message } from "./types";
+import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { useAppSettings } from "@/hooks/use-app-settings";
 

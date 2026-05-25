@@ -7,7 +7,7 @@ import { ChatArea } from "@/components/review/ChatArea";
 import { BuddyPanel } from "@/components/review/BuddyPanel";
 import { DailyChallenge } from "@/components/review/DailyChallenge";
 import { useAppSettings } from "@/hooks/use-app-settings";
-import type { Message } from "@/components/review/MessageBubble";
+import type { Message } from "@/components/review/types";
 import { extractCode, deriveTitle } from "@/lib/buddy-replies";
 
 export const Route = createFileRoute("/app")({
