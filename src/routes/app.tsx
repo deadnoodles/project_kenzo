@@ -8,8 +8,7 @@ import { BuddyPanel } from "@/components/review/BuddyPanel";
 import { DailyChallenge } from "@/components/review/DailyChallenge";
 import type { Message } from "@/components/review/MessageBubble";
 import {
-  generateAssistantReply,
-  extractCode,
+  extractCode,    
   deriveTitle,
 } from "@/lib/buddy-replies";
 
@@ -86,57 +85,101 @@ function ReviewApp() {
     setBuddyMessage("Fresh chat. Try to impress me.");
   };
 
-  const handleSend = (
-    text: string,
-    attachment?: { type: "image"; name: string },
-  ) => {
-    if (!active) return;
-    const sessionId = active.id;
-    const userMsg: Message = {
+const handleSend = async (
+  text: string,
+  attachment?: { type: "image"; name: string },
+) => {
+  if (!active) return;
+
+  const sessionId = active.id;
+  const code = extractCode(text);
+
+  const userMsg: Message = {
+    id: crypto.randomUUID(),
+    role: "user",
+    content: text,
+    code,
+    attachment,
+    timestamp: Date.now(),
+  };
+
+  setSessions((prev) =>
+    prev.map((s) =>
+      s.id === sessionId
+        ? {
+            ...s,
+            title: s.messages.length === 0 ? deriveTitle(text) : s.title,
+            messages: [...s.messages, userMsg],
+          }
+        : s,
+    ),
+  );
+
+  setThinkingMap((m) => ({ ...m, [sessionId]: true }));
+  setBuddyMessage("Hmm. Let me take a look…");
+
+  try {
+    const currentSession = sessions.find((s) => s.id === sessionId);
+
+    const response = await fetch("http://localhost:3001/api/review", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: text,
+        code,
+        attachment,
+        chatHistory: currentSession?.messages ?? [],
+      }),
+    });
+
+    const data = await response.json();
+
+    const assistantMsg: Message = {
       id: crypto.randomUUID(),
-      role: "user",
-      content: text,
-      code: extractCode(text),
-      attachment,
+      role: "assistant",
+      content: data.reply || "I reviewed it, but I have no dramatic comments this time.",
       timestamp: Date.now(),
     };
 
     setSessions((prev) =>
       prev.map((s) =>
         s.id === sessionId
-          ? {
-              ...s,
-              title: s.messages.length === 0 ? deriveTitle(text) : s.title,
-              messages: [...s.messages, userMsg],
-            }
+          ? { ...s, messages: [...s.messages, assistantMsg] }
           : s,
       ),
     );
 
-    setThinkingMap((m) => ({ ...m, [sessionId]: true }));
-    setBuddyMessage("Hmm. Let me take a look…");
+    setBuddyMessage(
+      data.buddyBubble ||
+        data.reply?.split("\n")[0]?.slice(0, 90) ||
+        "Not bad. Could be cleaner, obviously.",
+    );
+  } catch (error) {
+    console.error("Kenzo review failed:", error);
 
-    const delay = 900 + Math.random() * 700;
-    setTimeout(() => {
-      const replyContent = generateAssistantReply(text, attachment);
-      const assistantMsg: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: replyContent,
-        timestamp: Date.now(),
-      };
+    const errorMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content:
+        "Something broke while I was reviewing. Bold move from the machine. Try again in a second.",
+      timestamp: Date.now(),
+    };
 
-      setSessions((prev) =>
-        prev.map((s) =>
-          s.id === sessionId
-            ? { ...s, messages: [...s.messages, assistantMsg] }
-            : s,
-        ),
-      );
-      setThinkingMap((m) => ({ ...m, [sessionId]: false }));
-      setBuddyMessage(replyContent.split("\n")[0].slice(0, 90));
-    }, delay);
-  };
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === sessionId
+          ? { ...s, messages: [...s.messages, errorMsg] }
+          : s,
+      ),
+    );
+
+    setBuddyMessage("Not my finest moment. Try again.");
+  } finally {
+    setThinkingMap((m) => ({ ...m, [sessionId]: false }));
+  }
+};
 
   return (
     <div className="relative min-h-screen">

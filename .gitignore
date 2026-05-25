@@ -30,3 +30,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# KEY
+.env
+Server/.env
+server/.env
