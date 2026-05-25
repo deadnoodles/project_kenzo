@@ -22,7 +22,7 @@ type Props = {
 export function ChatSidebar({ sessions, activeId, onSelect, onNew }: Props) {
   const { settings } = useAppSettings();
   const gap = settings.spaciousLayout ? "gap-3.5" : "gap-3";
-  const pad = settings.spaciousLayout ? "px-4 py-4" : "px-3.5 py-3.5";
+const pad = settings.spaciousLayout ? "px-4 py-4" : "px-4 py-4";
 
   return (
     <aside
@@ -40,7 +40,7 @@ export function ChatSidebar({ sessions, activeId, onSelect, onNew }: Props) {
 
       <button
         onClick={onNew}
-        className="btn-primary w-full gap-1.5 px-3 py-1.5 text-xs font-semibold"
+  className="btn-primary w-full gap-1.5 px-3 py-2 text-sm font-semibold"
       >
         <Plus className="h-3.5 w-3.5" /> New chat
       </button>
@@ -83,7 +83,7 @@ export function ChatSidebar({ sessions, activeId, onSelect, onNew }: Props) {
         </ul>
       </div>
 
-      <LearningStreakCard />
+{settings.showLearningStreak ? <LearningStreakCard /> : null}
 
       <Link
         to="/"

@@ -61,8 +61,6 @@ function ReviewApp() {
   const { settings } = useAppSettings();
   const [sessions, setSessions] = useState<Session[]>(() => [
     seedSession(),
-    seedSecondary("Fix Python script"),
-    seedSecondary("Improve API endpoint"),
   ]);
   const [activeId, setActiveId] = useState<string>(() => sessions[0]?.id ?? "");
   const [thinkingMap, setThinkingMap] = useState<Record<string, boolean>>({});
