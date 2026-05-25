@@ -12,7 +12,9 @@ export function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
   return (
     <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"} animate-fade-up`}>
-      <div className={`max-w-[80%] ${isUser ? "items-end" : "items-start"}`}>
+      <div
+        className={`w-full ${isUser ? "max-w-[88%] ml-auto items-end" : "max-w-[92%] mr-auto items-start"}`}
+      >
         {!isUser && (
           <div className="mb-1 ml-1 text-xs font-medium text-muted-foreground">Kenzo Buddy</div>
         )}

@@ -61,8 +61,6 @@ function ReviewApp() {
   const { settings } = useAppSettings();
   const [sessions, setSessions] = useState<Session[]>(() => [
     seedSession(),
-    seedSecondary("Fix Python script"),
-    seedSecondary("Improve API endpoint"),
   ]);
   const [activeId, setActiveId] = useState<string>(() => sessions[0]?.id ?? "");
   const [thinkingMap, setThinkingMap] = useState<Record<string, boolean>>({});
@@ -74,11 +72,6 @@ function ReviewApp() {
   );
   const isThinking = !!thinkingMap[active?.id ?? ""];
 
-  const sidebarW = settings.spaciousLayout ? "340px" : "300px";
-  const buddyW = settings.spaciousLayout ? "420px" : "380px";
-  const colGap = settings.spaciousLayout ? "2.75rem" : "2rem";
-  const pagePad = settings.spaciousLayout ? "2.5rem" : "2rem";
-
   const handleNew = () => {
     const fresh: Session = {
       id: crypto.randomUUID(),
@@ -88,6 +81,39 @@ function ReviewApp() {
     setSessions((s) => [fresh, ...s]);
     setActiveId(fresh.id);
     setBuddyMessage("");
+  };
+
+  const handleDeleteChat = (sessionId: string) => {
+    setSessions((prev) => {
+      const updated = prev.filter((s) => s.id !== sessionId);
+      if (updated.length === 0) {
+        const fresh: Session = {
+          id: crypto.randomUUID(),
+          title: "New review",
+          messages: [],
+        };
+        setSessions([fresh]);
+        setActiveId(fresh.id);
+        return [fresh];
+      }
+      if (activeId === sessionId) {
+        setActiveId(updated[0]?.id ?? "");
+      }
+      return updated;
+    });
+  };
+
+  const handleShareChat = (sessionId: string) => {
+    console.log("Share chat:", sessionId);
+  };
+
+  const handleRenameChat = (sessionId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === sessionId ? { ...s, title: newTitle.trim() } : s,
+      ),
+    );
   };
 
   const handleSend = async (
@@ -194,45 +220,35 @@ function ReviewApp() {
         <AppNav />
       </div>
       <div
-        className="mx-auto grid h-[calc(100vh-57px)] w-full max-w-[100rem] grid-cols-1 md:h-screen md:grid-cols-[var(--sidebar)_minmax(0,1fr)] xl:grid-cols-[var(--sidebar)_minmax(0,1fr)_var(--buddy)]"
-        style={
-          {
-            "--sidebar": sidebarW,
-            "--buddy": buddyW,
-            columnGap: colGap,
-            paddingInline: pagePad,
-          } as CSSProperties
-        }
+        className="grid h-[calc(100vh-57px)] w-full md:h-screen md:grid-cols-[280px_minmax(0,1fr)_260px]"
+        style={{ gap: "0" } as CSSProperties}
       >
-        <div className="hidden md:block">
+        <div className="hidden h-full min-h-0 min-w-0 overflow-hidden md:flex md:flex-col">
           <ChatSidebar
             sessions={sessions}
             activeId={active?.id ?? ""}
             onSelect={setActiveId}
             onNew={handleNew}
+            onDelete={handleDeleteChat}
+            onShare={handleShareChat}
+            onRename={handleRenameChat}
           />
         </div>
 
-        <main className="flex h-screen min-w-0 flex-col">
+        <main className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           {active && (
             <ChatArea
               title={active.title}
               messages={active.messages}
               onSend={handleSend}
               isThinking={isThinking}
+              onRenameTitle={(newTitle) => handleRenameChat(active.id, newTitle)}
             />
           )}
         </main>
 
-        <aside
-          className={`hidden h-screen flex-col overflow-y-auto xl:flex ${
-            settings.spaciousLayout ? "gap-8 py-8 pl-2" : "gap-6 py-6 pl-2"
-          }`}
-        >
-          <div className="min-h-[480px] flex-1">
-            <BuddyPanel message={buddyMessage} />
-          </div>
-          <DailyChallenge />
+        <aside className="hidden h-full w-[260px] border-l border-border bg-card/30 p-3 pt-22 xl:flex">
+          <BuddyPanel />
         </aside>
       </div>
     </div>

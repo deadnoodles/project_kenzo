@@ -36,7 +36,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
     : "Paste code and hit Review. I'll flag lines worth a closer look.";
 
   return (
-    <div className="flex min-h-[min(72vh,640px)] flex-col rounded-3xl border border-border bg-card/95 p-5 shadow-cozy sketch-border backdrop-blur lg:sticky lg:top-6">
+    <div className="flex min-h-[min(72vh,640px)] flex-col rounded-3xl border border-border bg-card/95 p-9 shadow-cozy sketch-border backdrop-blur lg:sticky lg:top-10">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg">Kenzo inspector</h2>
         <span className="rounded-full bg-dusty-blue/50 px-2.5 py-0.5 text-xs font-medium text-foreground">
@@ -44,7 +44,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
         </span>
       </div>
 
-      <div className="relative mt-4 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-dusty-blue/20 to-background p-3">
+      <div className="relative mt-8 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-dusty-blue/20 to-background p-7">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-4 bottom-8 h-16 rounded-full bg-primary/20 blur-2xl animate-buddy-glow"
@@ -54,7 +54,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
         </div>
       </div>
 
-      <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3">
+      <div className="mt-8 flex min-h-0 flex-1 flex-col gap-5">
         {issue ? (
           <>
             <div className="flex flex-wrap items-center gap-2">
@@ -80,7 +80,7 @@ export function IssueInspector({ issue, hasReview }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22 }}
-            className="flex-1 overflow-y-auto rounded-2xl border border-primary/15 bg-blue-surface p-4"
+            className="flex-1 overflow-y-auto rounded-2xl border border-primary/15 bg-blue-surface p-6"
           >
             <p className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
               Kenzo

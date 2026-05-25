@@ -90,12 +90,12 @@ function LandingPage() {
       <DuckBackground />
       <AppNav showAuth />
 
-      <section className="page-container pt-10 pb-28 md:pt-14 md:pb-32">
-        <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-24">
-          <div className="animate-fade-up max-w-xl">
+      <section className="page-container pt-16 pb-40 md:pt-20 md:pb-48">
+        <div className="grid items-center gap-24 lg:grid-cols-2 lg:gap-36">
+          <div className="animate-fade-up max-w-2xl lg:max-w-3xl">
             <ModeToggle mode={mode} onChange={setMode} />
 
-            <div className="mt-8">
+            <div className="mt-12">
               <TypewriterHeading mode={mode} />
             </div>
 
@@ -104,7 +104,7 @@ function LandingPage() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground"
+              className="mt-10 max-w-xl text-lg leading-relaxed text-muted-foreground"
             >
               {copy.subtitle}
             </motion.p>
@@ -114,7 +114,7 @@ function LandingPage() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.05 }}
-              className="mt-10 flex flex-wrap items-center gap-4"
+              className="mt-14 flex flex-wrap items-center gap-6"
             >
               <Link to={copy.primary.to} className="btn-primary group">
                 {copy.primary.label}
@@ -125,35 +125,35 @@ function LandingPage() {
               </Link>
             </motion.div>
 
-            <p className="mt-6 text-base text-muted-foreground">
+            <p className="mt-10 text-base text-muted-foreground">
               Kenzo Buddy — review code visually or chat about it.
             </p>
           </div>
 
-          <div id="preview" className="animate-pop-in lg:pl-4">
+          <div id="preview" className="animate-pop-in lg:pl-12">
             <HeroPreview mode={mode} />
           </div>
         </div>
       </section>
 
-      <section id="features" className="page-container pb-28 pt-4">
-        <div className="mb-12">
+      <section id="features" className="page-container pb-44 pt-12">
+        <div className="mb-20">
           <h2 className="font-display text-3xl md:text-4xl">What Kenzo does</h2>
-          <p className="mt-3 text-lg text-muted-foreground">
+          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
             Minimal cards, maximum clarity.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
           {features.map(({ icon: Icon, title, body }) => (
             <div
               key={title}
-              className="group rounded-3xl border border-border bg-card/90 p-7 shadow-cozy sketch-border backdrop-blur transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-float"
+              className="group rounded-3xl border border-border bg-card/90 p-10 shadow-cozy sketch-border backdrop-blur transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-float"
             >
               <div className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-pale/80 text-primary ring-1 ring-primary/20 transition group-hover:bg-blue-pale">
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold">{title}</h3>
-              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+              <h3 className="mt-6 text-lg font-semibold">{title}</h3>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                 {body}
               </p>
             </div>

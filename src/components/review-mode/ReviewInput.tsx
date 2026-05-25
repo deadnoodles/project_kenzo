@@ -18,11 +18,11 @@ export function ReviewInput({
   error = null,
 }: Props) {
   return (
-    <div className="rounded-3xl border border-border bg-card/90 p-5 shadow-cozy sketch-border backdrop-blur">
+    <div className="rounded-3xl border border-border bg-card/90 p-10 shadow-cozy sketch-border backdrop-blur">
       <label htmlFor="review-code" className="font-display text-lg text-foreground">
         Paste your code
       </label>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-2 text-sm text-muted-foreground">
         Kenzo runs a real AI review — then click highlights for line-by-line dialogue.
       </p>
       {error ? (
@@ -41,9 +41,9 @@ export function ReviewInput({
   validateUser(user);
   return api.post("/login", user);
 }`}
-        className="mt-4 w-full resize-y rounded-2xl border border-border bg-background px-4 py-3 font-mono text-sm leading-relaxed text-foreground outline-none ring-ring placeholder:text-muted-foreground focus:ring-2 disabled:opacity-60"
+        className="mt-8 w-full resize-y rounded-2xl border border-border bg-background px-6 py-5 font-mono text-sm leading-relaxed text-foreground outline-none ring-ring placeholder:text-muted-foreground focus:ring-2 disabled:opacity-60"
       />
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-8 flex flex-wrap items-center gap-5">
         <button
           type="button"
           onClick={onReview}
