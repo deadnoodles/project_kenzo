@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { DuckBackground } from "@/components/DuckBackground";
 import { AppNav } from "@/components/AppNav";
-import { KenzoMascot } from "@/components/KenzoMascot";
+import { TypewriterHeading } from "@/components/landing/TypewriterHeading";
+import { ModeToggle, type HeroMode } from "@/components/landing/ModeToggle";
+import { HeroPreview } from "@/components/landing/HeroPreview";
 import {
   ScanSearch,
   MousePointerClick,
@@ -59,47 +63,81 @@ const features = [
   },
 ];
 
+const heroCopy: Record<
+  HeroMode,
+  { subtitle: string; primary: { to: string; label: string }; secondary: { to: string; label: string } }
+> = {
+  review: {
+    subtitle:
+      "Paste code, see highlighted lines, and hear what Kenzo thinks — one click at a time.",
+    primary: { to: "/review", label: "Start Review Mode" },
+    secondary: { to: "/app", label: "Open Chat Mode" },
+  },
+  chat: {
+    subtitle:
+      "Ask follow-ups, debug together, and chat through your next fix with Kenzo.",
+    primary: { to: "/app", label: "Open Chat Mode" },
+    secondary: { to: "/review", label: "Start Review Mode" },
+  },
+};
+
 function LandingPage() {
+  const [mode, setMode] = useState<HeroMode>("review");
+  const copy = heroCopy[mode];
+
   return (
     <div className="relative min-h-screen">
       <DuckBackground />
       <AppNav showAuth />
 
-      <section className="mx-auto max-w-6xl px-4 pt-6 pb-16 sm:px-6 md:pt-12">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+      <section className="mx-auto max-w-6xl px-4 pt-6 pb-16 sm:px-6 md:pt-10">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
           <div className="animate-fade-up">
-            <span className="inline-flex items-center gap-2 rounded-full bg-dusty-blue/40 px-3 py-1 text-xs font-medium text-foreground">
-              <ScanSearch className="h-3.5 w-3.5" /> Two modes — review or chat
-            </span>
-            <h1 className="mt-5 font-display text-4xl leading-[1.08] tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Review code with<br />
-              Kenzo Buddy
-            </h1>
-            <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-              Paste code, inspect highlights, or chat through your next fix.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <ModeToggle mode={mode} onChange={setMode} />
+
+            <div className="mt-6">
+              <TypewriterHeading mode={mode} />
+            </div>
+
+            <motion.p
+              key={mode}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="mt-5 max-w-lg text-lg text-muted-foreground"
+            >
+              {copy.subtitle}
+            </motion.p>
+
+            <motion.div
+              key={`cta-${mode}`}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: 0.05 }}
+              className="mt-8 flex flex-wrap items-center gap-3"
+            >
               <Link
-                to="/review"
-                className="group inline-flex items-center gap-2 rounded-full bg-brown px-6 py-3 text-sm font-semibold text-cream shadow-cozy transition hover:opacity-90"
+                to={copy.primary.to}
+                className="group inline-flex items-center gap-2 rounded-full bg-brown px-6 py-3 text-sm font-semibold text-cream shadow-cozy transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-float"
               >
-                Start Review Mode
+                {copy.primary.label}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                to="/app"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition hover:bg-card"
+                to={copy.secondary.to}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition hover:-translate-y-0.5 hover:bg-card hover:shadow-cozy"
               >
-                Open Chat Mode
+                {copy.secondary.label}
               </Link>
-            </div>
+            </motion.div>
+
+            <p className="mt-5 text-sm text-muted-foreground">
+              Kenzo Buddy — review code visually or chat about it.
+            </p>
           </div>
 
-          <div id="preview" className="relative animate-pop-in">
-            <ProductPreview />
-            <div className="pointer-events-none absolute -right-4 -bottom-8 hidden opacity-90 sm:block">
-              <KenzoMascot size="sm" className="animate-float-soft" />
-            </div>
+          <div id="preview" className="animate-pop-in">
+            <HeroPreview mode={mode} />
           </div>
         </div>
       </section>
@@ -128,37 +166,6 @@ function LandingPage() {
       <footer className="mx-auto max-w-6xl px-4 pb-10 text-center text-xs text-muted-foreground sm:px-6">
         Kenzo Buddy — calm creative coding workspace.
       </footer>
-    </div>
-  );
-}
-
-function ProductPreview() {
-  return (
-    <div className="rounded-[2rem] border border-border bg-card/90 p-5 shadow-float sketch-border backdrop-blur">
-      <div className="flex items-center gap-2 border-b border-border pb-3">
-        <span className="rounded-full bg-dusty-blue/50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">
-          Review
-        </span>
-        <span className="text-xs text-muted-foreground">kenzo.review</span>
-      </div>
-      <pre className="mt-3 overflow-x-auto rounded-2xl bg-code-bg p-4 font-mono text-xs leading-relaxed text-code-fg">
-        <span className="block text-code-fg/40"> 1</span>
-        <span className="block rounded bg-severity-medium/80 px-1 text-severity-medium-fg">
-          {" "}2  function login(user) {"{"}
-        </span>
-        <span className="block text-code-fg/40"> 3</span>
-        <span className="block rounded bg-severity-high/80 px-1 text-severity-high-fg">
-          {" "}4    if (!user.email) return null;
-        </span>
-        <span className="block text-code-fg/40"> 5</span>
-        <span className="block"> 6    return api.post("/login", user);</span>
-      </pre>
-      <div className="mt-3 rounded-2xl border border-border bg-assistant-bubble px-3 py-2 text-xs text-assistant-bubble-foreground">
-        <span className="font-semibold">Kenzo:</span> That guard clause? Bold of you to skip it.
-      </div>
-      <p className="mt-3 text-center text-[11px] text-muted-foreground">
-        Click a highlight → inspector explains → chat when you&apos;re ready
-      </p>
     </div>
   );
 }

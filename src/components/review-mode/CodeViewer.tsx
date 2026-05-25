@@ -45,7 +45,7 @@ export function CodeViewer({
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-code-bg shadow-cozy sketch-border">
       <div className="border-b border-border/30 bg-code-bg/80 px-4 py-2 text-xs text-code-fg/70">
-        Click a highlighted line — Kenzo&apos;s dialogue appears below
+        Click a highlighted line — Kenzo explains in the inspector
       </div>
       <div className="max-h-[min(58vh,480px)] overflow-auto p-3">
         <table className="w-full border-collapse font-mono text-sm">

@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { FilePlus2 } from "lucide-react";
 import { DuckBackground } from "@/components/DuckBackground";
 import { AppNav } from "@/components/AppNav";
 import { ReviewInput } from "@/components/review-mode/ReviewInput";
 import { CodeViewer } from "@/components/review-mode/CodeViewer";
 import { IssueInspector } from "@/components/review-mode/IssueInspector";
 import { ReviewSummary } from "@/components/review-mode/ReviewSummary";
-import { KenzoDialogueBox } from "@/components/review-mode/KenzoDialogueBox";
 import { fetchCodeReview, pickPrimaryIssue, type ReviewData } from "@/lib/review-api";
 
 export const Route = createFileRoute("/review")({
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/review")({
       {
         name: "description",
         content:
-          "Visual code review with highlighted lines and Kenzo's dialogue explanations.",
+          "Visual code review with highlighted lines and Kenzo inspector explanations.",
       },
     ],
   }),
@@ -69,14 +69,14 @@ function ReviewModePage() {
       <main className="mx-auto w-full max-w-[1240px] px-6 pb-16">
         <div className="mb-8 animate-fade-up text-center md:text-left">
           <span className="inline-flex rounded-full bg-dusty-blue/40 px-3 py-1 text-xs font-medium text-foreground">
-            Review Mode — AI highlights, dialogue on click
+            Review Mode — AI highlights, inspector on click
           </span>
           <h1 className="mt-3 font-display text-3xl tracking-tight md:text-4xl">
             Visual code review
           </h1>
           <p className="mt-2 mx-auto max-w-2xl text-muted-foreground md:mx-0">
             Paste code for a live review from Kenzo. Click any highlight — the
-            dialogue box below explains that exact line.
+            inspector on the right explains that exact line.
           </p>
         </div>
 
@@ -90,29 +90,31 @@ function ReviewModePage() {
           />
         ) : (
           <section className="space-y-5">
-            <ReviewSummary issues={review.issues} />
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <ReviewSummary issues={review.issues} />
+              </div>
+              <button
+                type="button"
+                onClick={resetReview}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border-2 border-gold/50 bg-gold/20 px-5 py-2.5 text-sm font-semibold text-foreground shadow-cozy transition hover:-translate-y-0.5 hover:bg-gold/35 hover:shadow-float"
+              >
+                <FilePlus2 className="h-4 w-4" />
+                Review new code
+              </button>
+            </div>
 
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-8">
-              <div className="min-w-0 space-y-4">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
+              <div className="min-w-0">
                 <CodeViewer
                   code={review.code}
                   issues={review.issues}
                   selectedIssueId={selectedIssueId}
                   onSelectIssue={setSelectedIssueId}
                 />
-                <KenzoDialogueBox issue={selectedIssue} />
-                <button
-                  type="button"
-                  onClick={resetReview}
-                  className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-                >
-                  ← Paste different code
-                </button>
               </div>
 
-              <div className="lg:sticky lg:top-6 lg:self-start">
-                <IssueInspector issue={selectedIssue} hasReview />
-              </div>
+              <IssueInspector issue={selectedIssue} hasReview />
             </div>
 
             {review.issues.length === 0 ? (
@@ -122,12 +124,6 @@ function ReviewModePage() {
               </p>
             ) : null}
           </section>
-        )}
-
-        {!hasResults && (
-          <div className="mt-6 max-w-xl">
-            <KenzoDialogueBox issue={null} />
-          </div>
         )}
       </main>
     </div>
