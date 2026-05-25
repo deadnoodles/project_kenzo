@@ -1,54 +1,32 @@
-export type Message = {
-  id: string;
-  role: "user" | "assistant";
-  content?: string;
-  code?: string;
-  attachment?: { type: "image"; name: string };
-  thinking?: boolean;
-  timestamp?: number;
-};
+import type { Message } from "./types";
 
 export function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
+
   return (
-    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"} animate-fade-up`}>
+    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`w-full ${isUser ? "max-w-[88%] ml-auto items-end" : "max-w-[92%] mr-auto items-start"}`}
+        className={`w-fit max-w-[75%] rounded-2xl px-4 py-3 shadow-cozy ring-1 backdrop-blur ${
+          isUser
+            ? "rounded-br-none bg-primary/95 text-primary-foreground ring-primary/20"
+            : "rounded-bl-none bg-card/95 text-foreground ring-border"
+        }`}
       >
-        {!isUser && (
-          <div className="mb-1 ml-1 text-xs font-medium text-muted-foreground">Kenzo Buddy</div>
-        )}
-        <div
-          className={`rounded-3xl px-4 py-3 text-sm shadow-cozy ${
-            isUser
-              ? "rounded-tr-md bg-user-bubble text-user-bubble-foreground"
-              : "rounded-tl-md bg-assistant-bubble text-assistant-bubble-foreground"
-          }`}
-        >
-          {message.thinking ? (
-            <span className="inline-flex items-center">
-              <span className="typing-dot" />
-              <span className="typing-dot" />
-              <span className="typing-dot" />
-            </span>
-          ) : (
-            <>
-              {message.attachment && (
-                <div className="mb-2 inline-flex items-center gap-2 rounded-2xl bg-background/30 px-3 py-1.5 text-xs">
-                  🖼️ {message.attachment.name}
-                </div>
-              )}
-              {message.content && (
-                <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
-              )}
-              {message.code && (
-                <pre className="mt-2 rounded-2xl bg-code-bg p-3 text-xs text-code-fg overflow-x-auto">
-                  <code>{message.code}</code>
-                </pre>
-              )}
-            </>
-          )}
-        </div>
+        <p className="break-words whitespace-pre-wrap text-sm leading-relaxed">
+          {message.content}
+        </p>
+
+        {message.code ? (
+          <pre className="mt-3 max-w-full overflow-x-auto rounded-xl border border-border bg-background/95 p-3 font-mono text-xs leading-relaxed text-foreground">
+            <code>{message.code}</code>
+          </pre>
+        ) : null}
+
+        {message.attachment ? (
+          <div className="mt-2 text-xs opacity-80">
+            📎 {message.attachment.name}
+          </div>
+        ) : null}
       </div>
     </div>
   );

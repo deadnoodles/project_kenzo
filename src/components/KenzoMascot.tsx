@@ -1,58 +1,40 @@
-import buddy from "@/assets/buddy.png";
+import kenzoSad from "@/assets/kenzo_sad_fullbody.png";
+import kenzoHappy from "@/assets/kenzo_happy_fullbody.png";
+import kenzoObserving from "@/assets/kenzo_observing_fullbody.png";
+import kenzoAngry from "@/assets/kenzo_angry_fullbody.png";
 
-export type KenzoMascotSize = "sm" | "md" | "lg";
-
-const sizeClasses: Record<KenzoMascotSize, string> = {
-  sm: "h-24 w-24",
-  md: "h-40 w-40",
-  lg: "h-56 w-56",
-};
+export type KenzoMood = "happy" | "sad" | "observing" | "angry";
 
 type Props = {
-  size?: KenzoMascotSize;
+  mood?: KenzoMood;
+  size?: "sm" | "md" | "lg";
   className?: string;
-  /** Override with a custom PNG/GIF path when ready */
-  imageSrc?: string;
-  /** Future: pass a video src to render MP4 instead of image */
-  videoSrc?: string;
-  alt?: string;
 };
 
-/**
- * Kenzo mascot — swap assets without touching layout shells.
- * Default: src/assets/buddy.png
- */
+const moodImage: Record<KenzoMood, string> = {
+  happy: kenzoHappy,
+  sad: kenzoSad,
+  observing: kenzoObserving,
+  angry: kenzoAngry,
+};
+
+const sizeClass = {
+  sm: "h-32 w-32",
+  md: "h-64 w-64",
+  lg: "h-[420px] w-[420px]",
+};
+
 export function KenzoMascot({
+  mood = "happy",
   size = "md",
   className = "",
-  imageSrc,
-  videoSrc,
-  alt = "Kenzo the duck buddy",
 }: Props) {
-  const dimension = sizeClasses[size];
-
-  if (videoSrc) {
-    return (
-      <video
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className={`${dimension} object-contain drop-shadow-[0_12px_20px_rgba(59,42,34,0.2)] ${className}`}
-        aria-label={alt}
-      />
-    );
-  }
-
   return (
     <img
-      src={imageSrc ?? buddy}
-      alt={alt}
-      width={768}
-      height={768}
-      loading="lazy"
-      className={`${dimension} object-contain drop-shadow-[0_12px_20px_rgba(59,42,34,0.2)] ${className}`}
+      src={moodImage[mood]}
+      alt="Kenzo"
+      draggable={false}
+      className={`${sizeClass[size]} object-contain ${className}`}
     />
   );
 }

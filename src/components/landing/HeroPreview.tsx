@@ -35,12 +35,21 @@ const codeLines = [
   "}",
 ];
 
+// function severityLineClass(severity: ReviewHighlight["severity"], active: boolean) {
+//   const base =
+//     severity === "high"
+//       ? "bg-blush/45 ring-blush/50"
+//       : "bg-primary/30 ring-primary/45";
+//   return `${base} ${active ? "ring-2" : "ring-1 hover:brightness-110"} cursor-pointer rounded-md transition`;
+// }
+
 function severityLineClass(severity: ReviewHighlight["severity"], active: boolean) {
   const base =
     severity === "high"
-      ? "bg-blush/45 ring-blush/50"
-      : "bg-primary/30 ring-primary/45";
-  return `${base} ${active ? "ring-2" : "ring-1 hover:brightness-110"} cursor-pointer rounded-md transition`;
+      ? "bg-primary/25 ring-primary/40"
+      : "bg-blue-pale/80 ring-primary/35";
+
+  return `${base} ${active ? "ring-2" : "ring-1 hover:brightness-105"} cursor-pointer rounded-md transition`;
 }
 
 function MiniDialogue({ text }: { text: string }) {
@@ -48,12 +57,11 @@ function MiniDialogue({ text }: { text: string }) {
     <motion.div
       initial={{ opacity: 0, y: 6, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      className="mt-3 rounded-lg border-[3px] border-blue-pale/80 bg-blue-surface px-3 py-2.5"
-    >
+className="mt-3 rounded-lg border border-border bg-primary/15 px-3 py-2.5 shadow-cozy"    >
       <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-primary">
         Kenzo
       </p>
-      <p className="mt-1 font-mono text-xs leading-relaxed text-cream">{text}</p>
+<p className="mt-1 font-mono text-xs leading-relaxed text-foreground">{text}</p>
     </motion.div>
   );
 }
@@ -71,14 +79,15 @@ function ReviewPreviewPanel() {
         <span className="text-xs text-muted-foreground">kenzo.review</span>
       </div>
       <p className="mt-2 text-[11px] text-muted-foreground">Click a highlight</p>
-      <pre className="mt-2 overflow-x-auto rounded-2xl bg-code-bg p-3 font-mono text-[11px] leading-relaxed text-code-fg">
-        {codeLines.map((line, i) => {
+<pre className="mt-2 overflow-x-auto rounded-2xl border border-border bg-background/80 p-3 font-mono text-[11px] leading-relaxed text-foreground">        {codeLines.map((line, i) => {
           const lineNum = i + 1;
           const hit = reviewHighlights.find((h) => h.line === lineNum);
           const active = hit?.id === selectedId;
           return (
             <div key={lineNum} className="flex gap-2">
-              <span className="w-4 shrink-0 text-right text-code-fg/35">{lineNum}</span>
+             <span className="w-4 shrink-0 text-right text-muted-foreground">
+  {lineNum}
+</span>
               <span
                 className={
                   hit

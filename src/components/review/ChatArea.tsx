@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pencil } from "lucide-react";
-import { MessageBubble, type Message } from "./MessageBubble";
+import type { Message } from "./types";
+import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { useAppSettings } from "@/hooks/use-app-settings";
 
@@ -8,11 +9,17 @@ type Props = {
   title: string;
   messages: Message[];
   onSend: (text: string, attachment?: { type: "image"; name: string }) => void;
-  isThinking: boolean;
+  isThinking?: boolean;
   onRenameTitle?: (newTitle: string) => void;
 };
 
-export function ChatArea({ title, messages, onSend, isThinking, onRenameTitle }: Props) {
+export function ChatArea({
+  title,
+  messages,
+  onSend,
+  isThinking = false,
+  onRenameTitle,
+}: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const { settings } = useAppSettings();
   const msgGap = settings?.spaciousLayout ? "gap-7" : "gap-6";
@@ -95,7 +102,7 @@ export function ChatArea({ title, messages, onSend, isThinking, onRenameTitle }:
           ))}
           {isThinking && (
             <div className="text-sm text-muted-foreground">
-              Thinking…
+              Thinking...
             </div>
           )}
           <div ref={endRef} />
@@ -103,14 +110,14 @@ export function ChatArea({ title, messages, onSend, isThinking, onRenameTitle }:
       </div>
 
       {/* Input */}
-      <div className="flex-none border-t border-border/40 bg-card/50 px-6 py-4">
-        <ChatInput
-          onSend={onSend}
-          thinkingMode={thinkingMode}
-          onToggleThinking={() => setThinkingMode(!thinkingMode)}
-          disabled={isThinking}
-        />
-      </div>
+      <div className="w-full shrink-0 border-t border-border bg-card/40 px-8 py-7 backdrop-blur">
+  <ChatInput
+    onSend={onSend}
+    thinkingMode={thinkingMode}
+    onToggleThinking={() => setThinkingMode((v) => !v)}
+    disabled={isThinking}
+  />
+</div>
     </div>
   );
 }

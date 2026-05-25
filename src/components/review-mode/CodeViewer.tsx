@@ -1,7 +1,4 @@
-import {
-  pickPrimaryIssue,
-  type ReviewIssue,
-} from "@/lib/review-api";
+import type { ReviewIssue } from "@/lib/review-api";
 
 type Props = {
   code: string;
@@ -10,16 +7,32 @@ type Props = {
   onSelectIssue: (id: string) => void;
 };
 
-function severityClass(severity: ReviewIssue["severity"], selected: boolean) {
-  const map = {
-    low: "bg-dusty-blue/35 text-code-fg ring-dusty-blue/50",
-    medium: "bg-primary/30 text-code-fg ring-primary/45",
-    high: "bg-blush/40 text-code-fg ring-blush/50",
-  } as const;
-  const base = map[severity];
-  return selected
-    ? `${base} ring-2`
-    : `${base} hover:brightness-110`;
+function getLineIssues(issues: ReviewIssue[], lineNumber: number) {
+  return issues.filter(
+    (issue) => lineNumber >= issue.startLine && lineNumber <= issue.endLine,
+  );
+}
+
+function getHighlightClass(issue?: ReviewIssue, selectedIssueId?: string | null) {
+  if (!issue) return "";
+
+  const isSelected = issue.id === selectedIssueId;
+
+  if (issue.severity === "high") {
+    return isSelected
+      ? "bg-primary/30 ring-2 ring-primary/55 dark:bg-blush/40 dark:ring-blush/50"
+      : "bg-primary/18 ring-1 ring-primary/30 hover:bg-primary/25 dark:bg-blush/25 dark:ring-blush/35";
+  }
+
+  if (issue.severity === "medium") {
+    return isSelected
+      ? "bg-blue-pale/65 ring-2 ring-primary/45 dark:bg-primary/30 dark:ring-primary/45"
+      : "bg-blue-pale/40 ring-1 ring-primary/25 hover:bg-blue-pale/55 dark:bg-primary/20 dark:ring-primary/30";
+  }
+
+  return isSelected
+    ? "bg-muted/60 ring-2 ring-primary/35"
+    : "bg-muted/35 ring-1 ring-border hover:bg-muted/50";
 }
 
 export function CodeViewer({
@@ -30,73 +43,45 @@ export function CodeViewer({
 }: Props) {
   const lines = code.split("\n");
 
-  const issueByLine = new Map<number, ReviewIssue[]>();
-  for (const issue of issues) {
-    for (let line = issue.startLine; line <= issue.endLine; line++) {
-      const content = lines[line - 1];
-      if (!content?.trim()) continue;
-
-      const list = issueByLine.get(line) ?? [];
-      list.push(issue);
-      issueByLine.set(line, list);
-    }
-  }
-
   return (
-    <div className="overflow-hidden rounded-3xl border border-border bg-code-bg shadow-cozy sketch-border">
-      <div className="border-b border-border/30 bg-code-bg/80 px-8 py-4 text-xs text-code-fg/70">
-        Click a highlighted line — Kenzo explains in the inspector
+    <div className="overflow-hidden rounded-3xl border border-border bg-card/35  sketch-border dark:bg-card/35">
+      <div className="border-b border-border bg-card/35 px-6 py-4 dark:bg-card/35">
+        <p className="text-sm text-muted-foreground">
+          Click a highlighted line — Kenzo explains in the inspector
+        </p>
       </div>
-      <div className="max-h-[min(65vh,560px)] overflow-auto p-7">
-        <table className="w-full border-collapse font-mono text-sm">
-          <tbody>
-            {lines.map((line, index) => {
-              const lineNum = index + 1;
-              const lineIssues = issueByLine.get(lineNum) ?? [];
-              const primary = pickPrimaryIssue(lineIssues);
-              const highlighted = !!primary;
-              const selected =
-                primary && selectedIssueId === primary.id;
 
-              return (
-                <tr
-                  key={lineNum}
-                  className={
-                    highlighted
-                      ? "cursor-pointer transition"
-                      : "text-code-fg/90"
-                  }
-                >
-                  <td className="w-10 select-none pr-3 text-right align-top text-xs text-code-fg/40">
-                    {lineNum}
-                  </td>
-                  <td
-                    className={`align-top whitespace-pre rounded-md px-2 py-0.5 ${
-                      highlighted && primary
-                        ? severityClass(primary.severity, !!selected)
-                        : ""
-                    }`}
-                    onClick={() => {
-                      if (primary) onSelectIssue(primary.id);
-                    }}
-                    onKeyDown={(e) => {
-                      if (primary && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        onSelectIssue(primary.id);
-                      }
-                    }}
-                    role={highlighted ? "button" : undefined}
-                    tabIndex={highlighted ? 0 : undefined}
-                    aria-pressed={selected || undefined}
-                  >
-                    {line || " "}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <pre className="max-h-[520px] overflow-auto bg-transparent p-6 font-mono text-sm leading-relaxed text-foreground dark:bg-code-bg/65 dark:text-code-fg">
+        {lines.map((line, index) => {
+          const lineNumber = index + 1;
+          const lineIssues = getLineIssues(issues, lineNumber);
+          const primaryIssue = lineIssues[0];
+          const isClickable = !!primaryIssue;
+
+          return (
+            <div key={`${lineNumber}-${line}`} className="flex min-w-max gap-4">
+              <span className="w-8 shrink-0 select-none text-right text-foreground/45 dark:text-code-fg/40">
+                {lineNumber}
+              </span>
+
+              <button
+                type="button"
+                disabled={!isClickable}
+                onClick={() => {
+                  if (primaryIssue) onSelectIssue(primaryIssue.id);
+                }}
+                className={`block min-h-[1.65rem] flex-1 rounded-lg px-2 text-left transition ${
+                  isClickable
+                    ? `cursor-pointer ${getHighlightClass(primaryIssue, selectedIssueId)}`
+                    : "cursor-default"
+                }`}
+              >
+                <code>{line || " "}</code>
+              </button>
+            </div>
+          );
+        })}
+      </pre>
     </div>
   );
 }
